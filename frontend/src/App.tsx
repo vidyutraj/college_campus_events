@@ -1,7 +1,5 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-import './App.css';
 import Homepage from './components/Homepage';
 import Dashboard from './components/Dashboard';
 import EventDetail from './components/EventDetail';
@@ -18,15 +16,15 @@ function AppHeader() {
   };
 
   return (
-    <header className="App-header">
-      <div className="header-content">
-        <Link to="/" style={{ textDecoration: 'none', color: 'white' }}>
-          <h1>College Campus Events</h1>
+    <header className="bg-primary text-white shadow-md">
+      <div className="max-w-7xl mx-auto px-5 py-5 flex justify-between items-center flex-wrap gap-5">
+        <Link to="/" className="no-underline text-white">
+          <h1 className="text-3xl font-bold m-0">College Campus Events</h1>
         </Link>
-        <nav className="header-nav">
+        <nav className="flex items-center gap-5 flex-wrap">
           {isAuthenticated ? (
             <>
-              <span className="user-info">
+              <span className="text-white/90 text-sm">
                 {organization ? (
                   <>Welcome, {organization.name} (Organization)</>
                 ) : (
@@ -35,22 +33,35 @@ function AppHeader() {
                 )}
               </span>
               {userType === 'student' && (
-                <Link to="/events" className="nav-link">Events</Link>
+                <Link to="/events" className="text-white no-underline font-medium px-4 py-2 rounded transition-colors hover:bg-white/10">
+                  Events
+                </Link>
               )}
               {userType === 'organization_leader' && (
                 <>
-                  <Link to="/events" className="nav-link">Events</Link>
-                  <Link to="/leader/dashboard" className="nav-link">Dashboard</Link>
+                  <Link to="/events" className="text-white no-underline font-medium px-4 py-2 rounded transition-colors hover:bg-white/10">
+                    Events
+                  </Link>
+                  <Link to="/leader/dashboard" className="text-white no-underline font-medium px-4 py-2 rounded transition-colors hover:bg-white/10">
+                    Dashboard
+                  </Link>
                 </>
               )}
-              <button onClick={handleLogout} className="nav-link logout-btn">
+              <button 
+                onClick={handleLogout} 
+                className="text-white bg-white/20 hover:bg-white/30 border-0 cursor-pointer font-medium px-4 py-2 rounded transition-colors"
+              >
                 Logout
               </button>
             </>
           ) : (
             <>
-              <Link to="/events" className="nav-link">Browse Events</Link>
-              <Link to="/login" className="nav-link">Sign In</Link>
+              <Link to="/events" className="text-white no-underline font-medium px-4 py-2 rounded transition-colors hover:bg-white/10">
+                Browse Events
+              </Link>
+              <Link to="/login" className="text-white no-underline font-medium px-4 py-2 rounded transition-colors hover:bg-white/10">
+                Sign In
+              </Link>
             </>
           )}
         </nav>
@@ -60,9 +71,10 @@ function AppHeader() {
 }
 
 function App() {
+  console.log('App component rendering');
   return (
     <Router>
-      <div className="App">
+      <div className="min-h-screen bg-gray-50">
         <AppHeader />
         <Routes>
           <Route path="/" element={<Homepage />} />
@@ -78,3 +90,4 @@ function App() {
 }
 
 export default App;
+

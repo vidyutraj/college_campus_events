@@ -1,15 +1,35 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
+import type { ReactNode } from 'react';
 import axiosInstance from '../utils/axiosConfig';
+import type { User, Organization, UserType } from '../types';
 
-const AuthContext = createContext(null);
+interface AuthContextType {
+  user: User | null;
+  userType: UserType | null;
+  organization: Organization | null;
+  loading: boolean;
+  login: (userData: User, userTypeData: UserType, orgData?: Organization | null) => void;
+  logout: () => Promise<void>;
+  checkAuth: () => Promise<void>;
+  isAuthenticated: boolean;
+  isStudent: boolean;
+  isOrganizationLeader: boolean;
+  isSiteAdmin: boolean;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
 
 const API_BASE_URL = '/api/auth';
 const ORG_API_BASE_URL = '/api/organizations';
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [userType, setUserType] = useState(null);
-  const [organization, setOrganization] = useState(null);
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export function AuthProvider({ children }: AuthProviderProps) {
+  const [user, setUser] = useState<User | null>(null);
+  const [userType, setUserType] = useState<UserType | null>(null);
+  const [organization, setOrganization] = useState<Organization | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,7 +48,7 @@ export function AuthProvider({ children }) {
       if (orgResponse.data.is_authenticated) {
         // Organization login takes precedence
         setOrganization(orgResponse.data.organization);
-        setUser({ username: orgResponse.data.organization.name });
+        setUser({ id: 0, username: orgResponse.data.organization.name });
         setUserType('organization_leader');
       } else if (userResponse.data.is_authenticated) {
         // Regular user login
@@ -50,7 +70,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const login = (userData, userTypeData, orgData = null) => {
+  const login = (userData: User, userTypeData: UserType, orgData: Organization | null = null) => {
     setUser(userData);
     setUserType(userTypeData);
     setOrganization(orgData);
@@ -72,7 +92,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const value = {
+  const value: AuthContextType = {
     user,
     userType,
     organization,
@@ -89,11 +109,10 @@ export function AuthProvider({ children }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export function useAuth() {
+export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 }
-

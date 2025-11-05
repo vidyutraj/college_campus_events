@@ -152,7 +152,9 @@ REST_FRAMEWORK = {
 
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",  # Keep for backwards compatibility
     "http://127.0.0.1:3000",
 ]
 
@@ -171,7 +173,9 @@ CORS_ALLOW_HEADERS = [
 
 # CSRF Configuration
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",  # Keep for backwards compatibility
     "http://127.0.0.1:3000",
 ]
 CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript to access CSRF cookie
