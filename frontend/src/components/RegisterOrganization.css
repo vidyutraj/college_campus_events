@@ -1,0 +1,90 @@
+/* Reuse Login.css styles */
+@import './Login.css';
+
+.auth-notice {
+  background-color: #e8f5e9;
+  border-left: 4px solid #4caf50;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.auth-notice p {
+  margin: 5px 0;
+  color: #555;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.auth-notice strong {
+  color: #2e7d32;
+}
+
+.form-section-divider {
+  margin: 30px 0 20px 0;
+  padding-top: 20px;
+  border-top: 2px solid #e0e0e0;
+}
+
+.form-section-divider h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 1.2em;
+}
+
+.form-section-divider p {
+  margin: 0 0 20px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.register-org-container {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background-color: #f5f5f5;
+}
+
+.register-org-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.register-org-card h2 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 2em;
+  text-align: center;
+}
+
+.register-org-subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.form-note {
+  background-color: #e3f2fd;
+  border-left: 4px solid #1976d2;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.form-note p {
+  margin: 0;
+  color: #555;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.form-note strong {
+  color: #1976d2;
+}
+
