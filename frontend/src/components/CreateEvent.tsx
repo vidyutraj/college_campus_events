@@ -76,7 +76,7 @@ export default function CreateEvent() {
         setError("");
         setSuccess("");
 
-        if (organization) {
+        if (!organization) {
             setError(
                 "Authentication error: User is not associated with an organization. Please refresh and try again."
             );

@@ -9,7 +9,7 @@ import RegisterStudent from "./components/RegisterStudent";
 import RegisterOrganization from "./components/RegisterOrganization";
 import CreateEvent from "./components/CreateEvent";
 function AppHeader() {
-  const { user, userType, organizationName, logout, isAuthenticated } = useAuth();
+  const { user, userType, organization, logout, isAuthenticated } = useAuth();
 
     const handleLogout = async () => {
         await logout();
@@ -26,12 +26,10 @@ function AppHeader() {
           {isAuthenticated ? (
             <>
               <span className="text-white/90 text-sm">
-                {organizationName ? (
-                  <>Welcome, {organizationName} (Organization)</>
-                ) : (
+                {
                   <>Welcome, {user?.username} ({userType === 'student' ? 'Student' :
-                    userType === 'organization_leader' ? 'Leader' : 'Admin'})</>
-                )}
+                    organization?.name ? `${organization.name}` : 'Admin'})</>
+                }
               </span>
               {userType === 'student' && (
                 <Link to="/events" className="text-white no-underline font-medium px-4 py-2 rounded transition-colors hover:bg-white/10">

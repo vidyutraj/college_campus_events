@@ -7,7 +7,7 @@ interface AuthContextType {
   user: User | null;
   userType: UserType | null;
   loading: boolean;
-  login: (userData: User, userTypeData: UserType) => void;
+  login: (userData: User, userTypeData: UserType, organizationData: Organization) => void;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
   isAuthenticated: boolean;
@@ -38,7 +38,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const checkAuth = async () => {
     try {
       const userResponse = await axiosInstance.get(`/api/auth/check/`).catch(() => ({ data: { is_authenticated: false } }));
-      
+
       if (userResponse.data.is_authenticated) {
         setUser(userResponse.data.user);
         setUserType(userResponse.data.user_type);
@@ -57,9 +57,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const login = (userData: User, userTypeData: UserType) => {
+  const login = (userData: User, userTypeData: UserType, organization: Organization) => {
     setUser(userData);
     setUserType(userTypeData);
+    setOrganization(organization);
   };
 
   const logout = async () => {

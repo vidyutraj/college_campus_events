@@ -29,8 +29,8 @@ function Login() {
     setError(null);
 
     try {
-      const response = await axiosInstance.post(`${API_BASE_URL}/login/`, formData);
-      authLogin(response.data.user, response.data.user_type);
+      const response = await axiosInstance.post(`/api/auth/login/`, formData);
+      authLogin(response.data.user, response.data.user_type, response.data.organization);
       
       if (response.data.user_type === 'organization_leader') {
         navigate('/leader/dashboard');
