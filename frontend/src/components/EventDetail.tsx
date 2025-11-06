@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axiosInstance from '../utils/axiosConfig';
 import type { Event } from '../types';
+import { AxiosError } from 'axios';
 
 const API_BASE_URL = '/api/events/';
 
@@ -81,13 +82,17 @@ function EventDetail() {
       
       await fetchEvent();
       alert(response.data.message || 'RSVP cancelled successfully!');
-    } catch (err: any) {
-      if (err.response?.status === 401) {
-        setRsvpError('Please login to manage your RSVPs.');
-      } else if (err.response?.status === 404) {
-        setRsvpError('No RSVP found to cancel.');
+    } catch (err: unknown) {
+      if (err instanceof AxiosError) {
+        if (err.response?.status === 401) {
+          setRsvpError('Please login to manage your RSVPs.');
+        } else if (err.response?.status === 404) {
+          setRsvpError('No RSVP found to cancel.');
+        } else {
+          setRsvpError(err.response?.data?.error || err.response?.data?.message || 'Failed to cancel RSVP. Please try again.');
+        }
       } else {
-        setRsvpError(err.response?.data?.error || err.response?.data?.message || 'Failed to cancel RSVP. Please try again.');
+        setRsvpError('Failed to cancel RSVP. Please try again.');
       }
       console.error('Error cancelling RSVP:', err);
     } finally {
@@ -113,7 +118,24 @@ function EventDetail() {
   return (
     <div className="max-w-7xl mx-auto px-5 py-8">
       <Link to="/events" className="text-primary hover:text-primary-dark mb-6 inline-block">← Back to Events</Link>
-      
+      {event.status === "cancelled" && (
+        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded mb-4">
+          This event has been cancelled.
+        </div>
+      )}
+
+      {event.status === "draft" && (
+        <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 p-4 rounded mb-4">
+          This event is currently a draft and not yet published.
+        </div>
+      )}
+
+      {!event.is_approved && (
+        <div className="bg-blue-50 border border-blue-200 text-blue-700 p-4 rounded mb-4">
+          This event is awaiting approval.
+        </div>
+      )}
+
       <div className="mb-6">
         <div className="flex items-start justify-between flex-wrap gap-4">
           <h1 className="text-4xl font-bold text-gray-800">{event.title}</h1>

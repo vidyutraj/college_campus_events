@@ -1,7 +1,7 @@
-from rest_framework import viewsets, filters, status
+from rest_framework import viewsets, filters, status, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils import timezone
 from .models import Event, EventCategory, RSVP
@@ -16,9 +16,14 @@ class EventCategoryViewSet(viewsets.ReadOnlyModelViewSet):
 
 class EventViewSet(viewsets.ModelViewSet):
     """ViewSet for events"""
-    queryset = Event.objects.filter(status='published', is_approved=True)
+    queryset = Event.objects.all()
     serializer_class = EventSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [permissions.AllowAny()]
+        return super().get_permissions()
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['category', 'modality', 'has_free_food', 'has_free_swag', 'host_organization']
     search_fields = ['title', 'description', 'location']
@@ -26,6 +31,11 @@ class EventViewSet(viewsets.ModelViewSet):
     ordering = ['-start_datetime']
 
     def get_queryset(self):
+        # For detail view (retrieve), allow fetching any event regardless of status
+        if self.action == 'retrieve':
+            return Event.objects.all()
+        
+        # For list view, apply filters for published and approved events
         queryset = Event.objects.filter(status='published', is_approved=True)
         
         # Filter by date range if provided
@@ -44,7 +54,14 @@ class EventViewSet(viewsets.ModelViewSet):
         return queryset
 
     def perform_create(self, serializer):
-        serializer.save(host_user=self.request.user)
+        host_organization = serializer.validated_data.get('host_organization')
+        host_user = None
+        if host_organization and host_organization.created_by:
+            host_user = host_organization.created_by
+        elif self.request.user.is_authenticated:
+            host_user = self.request.user
+        
+        serializer.save(host_user=host_user)
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def rsvp(self, request, pk=None):
