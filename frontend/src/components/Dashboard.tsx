@@ -1,18 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../utils/axiosConfig';
-import './Dashboard.css';
+import type { Event, Category, Organization } from '../types';
 
 const API_BASE_URL = '/api/events/';
 const CATEGORIES_URL = '/api/events/categories/';
 const ORGANIZATIONS_URL = '/api/organizations/';
 
+interface Filters {
+  category: string;
+  organization: string;
+  modality: string;
+  hasFreeFood: boolean;
+  hasFreeSwag: boolean;
+  startDate: string;
+  endDate: string;
+}
+
 function Dashboard() {
   const navigate = useNavigate();
-  const [events, setEvents] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [organizations, setOrganizations] = useState([]);
-  const [filters, setFilters] = useState({
+  const [events, setEvents] = useState<Event[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [filters, setFilters] = useState<Filters>({
     category: '',
     organization: '',
     modality: '',
@@ -23,9 +33,9 @@ function Dashboard() {
   });
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleEventClick = (eventId) => {
+  const handleEventClick = (eventId: number) => {
     navigate(`/events/${eventId}`);
   };
 
@@ -60,7 +70,7 @@ function Dashboard() {
   const fetchEvents = async () => {
     try {
       setLoading(true);
-      const params = {};
+      const params: Record<string, string> = {};
       
       if (filters.category) {
         params.category = filters.category;
@@ -95,7 +105,7 @@ function Dashboard() {
     }
   };
 
-  const handleFilterChange = (filterName, value) => {
+  const handleFilterChange = (filterName: keyof Filters, value: string | boolean) => {
     setFilters(prev => ({
       ...prev,
       [filterName]: value
@@ -119,7 +129,7 @@ function Dashboard() {
            filters.hasFreeFood || filters.hasFreeSwag || filters.startDate || filters.endDate;
   };
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
       weekday: 'short',
@@ -131,41 +141,41 @@ function Dashboard() {
     });
   };
 
-  if (loading) {
-    return <div className="loading">Loading events...</div>;
+  if (loading && events.length === 0) {
+    return <div className="flex justify-center items-center py-20 text-xl text-gray-600">Loading events...</div>;
   }
 
-  if (error) {
-    return <div className="error">{error}</div>;
+  if (error && events.length === 0) {
+    return <div className="flex justify-center items-center py-20 text-xl text-red-600">{error}</div>;
   }
 
   return (
-    <div className="dashboard">
-      <div className="dashboard-header">
-        <h2>Upcoming Events</h2>
-        <div className="filter-toggle">
-          <button 
-            onClick={() => setShowFilters(!showFilters)} 
-            className="toggle-filters-btn"
-          >
-            {showFilters ? 'Hide Filters' : 'Show Filters'}
-            {hasActiveFilters() && <span className="filter-badge">●</span>}
-          </button>
-        </div>
+    <div className="max-w-7xl mx-auto px-5 py-8">
+      <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
+        <h2 className="text-3xl font-bold text-gray-800">Upcoming Events</h2>
+        <button 
+          onClick={() => setShowFilters(!showFilters)} 
+          className="bg-primary text-white px-6 py-2 rounded hover:bg-primary-dark transition-colors relative"
+        >
+          {showFilters ? 'Hide Filters' : 'Show Filters'}
+          {hasActiveFilters() && (
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+          )}
+        </button>
       </div>
 
       {showFilters && (
-        <div className="filters-panel">
-          <div className="filters-grid">
-            <div className="filter-group">
-              <label htmlFor="category-filter" className="filter-label">
+        <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6 shadow-sm">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+              <label htmlFor="category-filter" className="block text-sm font-medium text-gray-700 mb-2">
                 Category:
               </label>
               <select
                 id="category-filter"
                 value={filters.category}
                 onChange={(e) => handleFilterChange('category', e.target.value)}
-                className="filter-select"
+                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="">All Categories</option>
                 {categories.map(category => (
@@ -176,15 +186,15 @@ function Dashboard() {
               </select>
             </div>
 
-            <div className="filter-group">
-              <label htmlFor="organization-filter" className="filter-label">
+            <div>
+              <label htmlFor="organization-filter" className="block text-sm font-medium text-gray-700 mb-2">
                 Host Organization:
               </label>
               <select
                 id="organization-filter"
                 value={filters.organization}
                 onChange={(e) => handleFilterChange('organization', e.target.value)}
-                className="filter-select"
+                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="">All Organizations</option>
                 {organizations.map(org => (
@@ -195,15 +205,15 @@ function Dashboard() {
               </select>
             </div>
 
-            <div className="filter-group">
-              <label htmlFor="modality-filter" className="filter-label">
+            <div>
+              <label htmlFor="modality-filter" className="block text-sm font-medium text-gray-700 mb-2">
                 Modality:
               </label>
               <select
                 id="modality-filter"
                 value={filters.modality}
                 onChange={(e) => handleFilterChange('modality', e.target.value)}
-                className="filter-select"
+                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="">All Types</option>
                 <option value="in-person">In-Person</option>
@@ -212,8 +222,8 @@ function Dashboard() {
               </select>
             </div>
 
-            <div className="filter-group">
-              <label htmlFor="start-date-filter" className="filter-label">
+            <div>
+              <label htmlFor="start-date-filter" className="block text-sm font-medium text-gray-700 mb-2">
                 Start Date:
               </label>
               <input
@@ -221,12 +231,12 @@ function Dashboard() {
                 id="start-date-filter"
                 value={filters.startDate}
                 onChange={(e) => handleFilterChange('startDate', e.target.value)}
-                className="filter-input"
+                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
-            <div className="filter-group">
-              <label htmlFor="end-date-filter" className="filter-label">
+            <div>
+              <label htmlFor="end-date-filter" className="block text-sm font-medium text-gray-700 mb-2">
                 End Date:
               </label>
               <input
@@ -234,36 +244,41 @@ function Dashboard() {
                 id="end-date-filter"
                 value={filters.endDate}
                 onChange={(e) => handleFilterChange('endDate', e.target.value)}
-                className="filter-input"
+                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
-            <div className="filter-group perks-filter">
-              <label className="filter-label">Perks:</label>
-              <div className="checkbox-group">
-                <label className="checkbox-label">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Perks:</label>
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={filters.hasFreeFood}
                     onChange={(e) => handleFilterChange('hasFreeFood', e.target.checked)}
+                    className="w-4 h-4 text-primary focus:ring-primary border-gray-300 rounded"
                   />
-                  🍕 Free Food
+                  <span className="text-sm text-gray-700">🍕 Free Food</span>
                 </label>
-                <label className="checkbox-label">
+                <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={filters.hasFreeSwag}
                     onChange={(e) => handleFilterChange('hasFreeSwag', e.target.checked)}
+                    className="w-4 h-4 text-primary focus:ring-primary border-gray-300 rounded"
                   />
-                  🎁 Free Swag
+                  <span className="text-sm text-gray-700">🎁 Free Swag</span>
                 </label>
               </div>
             </div>
           </div>
 
           {hasActiveFilters() && (
-            <div className="filter-actions">
-              <button onClick={clearFilters} className="clear-filters-btn">
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <button 
+                onClick={clearFilters} 
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors"
+              >
                 Clear All Filters
               </button>
             </div>
@@ -272,32 +287,27 @@ function Dashboard() {
       )}
 
       {hasActiveFilters() && !showFilters && (
-        <div className="filter-info">
+        <div className="bg-blue-50 border border-blue-200 rounded p-4 mb-6 text-blue-800">
           Filters active: {events.length} event{events.length !== 1 ? 's' : ''} found
         </div>
       )}
 
-      {loading ? (
-        <div className="loading">Loading events...</div>
-      ) : error ? (
-        <div className="error">{error}</div>
-      ) : events.length === 0 ? (
-        <div className="no-events">
+      {events.length === 0 ? (
+        <div className="text-center py-20 text-gray-600 text-xl">
           {hasActiveFilters() 
             ? 'No events found matching your filters.' 
             : 'No upcoming events at this time.'}
         </div>
       ) : (
-        <div className="events-list">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {events.map(event => (
             <div 
               key={event.id} 
-              className="event-card"
+              className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-all cursor-pointer hover:-translate-y-1"
               onClick={() => handleEventClick(event.id)}
-              style={{ cursor: 'pointer' }}
             >
-              <h3>{event.title}</h3>
-              <div className="event-details">
+              <h3 className="text-xl font-bold text-gray-800 mb-3">{event.title}</h3>
+              <div className="space-y-2 text-sm text-gray-600 mb-4">
                 <p><strong>Date & Time:</strong> {formatDate(event.start_datetime)}</p>
                 <p><strong>Location:</strong> {event.location}</p>
                 <p><strong>Modality:</strong> {event.modality}</p>
@@ -307,13 +317,17 @@ function Dashboard() {
                 {event.category && (
                   <p><strong>Category:</strong> {event.category.name}</p>
                 )}
-                <div className="perks">
-                  {event.has_free_food && <span className="perk">🍕 Free Food</span>}
-                  {event.has_free_swag && <span className="perk">🎁 Free Swag</span>}
+                <div className="flex gap-2 flex-wrap mt-2">
+                  {event.has_free_food && (
+                    <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs">🍕 Free Food</span>
+                  )}
+                  {event.has_free_swag && (
+                    <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">🎁 Free Swag</span>
+                  )}
                 </div>
-                <p className="rsvp-count">{event.rsvp_count || 0} RSVPs</p>
+                <p className="text-primary font-medium">{event.rsvp_count || 0} RSVPs</p>
               </div>
-              <p className="event-description">{event.description}</p>
+              <p className="text-gray-700 line-clamp-3">{event.description}</p>
             </div>
           ))}
         </div>
@@ -323,4 +337,3 @@ function Dashboard() {
 }
 
 export default Dashboard;
-

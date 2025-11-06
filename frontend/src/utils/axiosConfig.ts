@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Get CSRF token from cookies
-function getCookie(name) {
+function getCookie(name: string): string | null {
   let cookieValue = null;
   if (document.cookie && document.cookie !== '') {
     const cookies = document.cookie.split(';');
@@ -26,10 +26,10 @@ const axiosInstance = axios.create({
 });
 
 // Fetch CSRF token on app load
-let csrfToken = null;
+let csrfToken: string | null = null;
 
 // Function to fetch CSRF token
-export async function fetchCSRFToken() {
+export async function fetchCSRFToken(): Promise<void> {
   try {
     const response = await axiosInstance.get('/api/csrf-token/');
     csrfToken = response.data.csrftoken;
@@ -71,4 +71,3 @@ axiosInstance.interceptors.request.use(
 fetchCSRFToken();
 
 export default axiosInstance;
-
