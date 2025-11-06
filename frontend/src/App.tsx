@@ -6,6 +6,7 @@ import EventDetail from './components/EventDetail';
 import Login from './components/Login';
 import RegisterStudent from './components/RegisterStudent';
 import RegisterOrganization from './components/RegisterOrganization';
+import AdminEvents from './components/AdminEvents';
 
 function AppHeader() {
   const { user, userType, organization, logout, isAuthenticated } = useAuth();
@@ -47,6 +48,16 @@ function AppHeader() {
                   </Link>
                 </>
               )}
+              {userType === 'site_admin' && (
+                <>
+                  <Link to="/events" className="text-white no-underline font-medium px-4 py-2 rounded transition-colors hover:bg-white/10">
+                    Events
+                  </Link>
+                  <Link to="/admin/events" className="text-white no-underline font-medium px-4 py-2 rounded transition-colors hover:bg-white/10">
+                    Admin
+                  </Link>
+                </>
+              )}
               <button 
                 onClick={handleLogout} 
                 className="text-white bg-white/20 hover:bg-white/30 border-0 cursor-pointer font-medium px-4 py-2 rounded transition-colors"
@@ -83,6 +94,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register/student" element={<RegisterStudent />} />
           <Route path="/register/organization" element={<RegisterOrganization />} />
+          <Route path="/admin/events" element={<AdminEvents />} />
         </Routes>
       </div>
     </Router>
@@ -90,4 +102,3 @@ function App() {
 }
 
 export default App;
-
