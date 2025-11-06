@@ -11,9 +11,12 @@ function RegisterOrganization() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    username: '',
-    password: '',
-    password_confirm: '',
+    user_username: '',
+    user_email: '',
+    user_password: '',
+    user_password_confirm: '',
+    user_first_name: '',
+    user_last_name: '',
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -25,10 +28,11 @@ function RegisterOrganization() {
   }, [isAuthenticated, userType, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: value
+    }));
     setError(null);
   };
 
@@ -43,48 +47,60 @@ function RegisterOrganization() {
       return;
     }
 
-    if (!formData.username.trim()) {
-      setError('Organization username is required.');
+    if (!formData.user_username.trim()) {
+      setError('User username is required.');
       setLoading(false);
       return;
     }
 
-    if (formData.username.length < 3) {
-      setError('Username must be at least 3 characters long.');
+    if (formData.user_username.length < 3) {
+      setError('User username must be at least 3 characters long.');
       setLoading(false);
       return;
     }
 
-    if (!formData.password) {
-      setError('Organization password is required.');
+    if (!formData.user_email.trim()) {
+      setError('User email is required.');
       setLoading(false);
       return;
     }
 
-    if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters long.');
+    if (!/\S+@\S+\.\S+/.test(formData.user_email)) {
+      setError('Please enter a valid email address.');
       setLoading(false);
       return;
     }
 
-    if (formData.password !== formData.password_confirm) {
-      setError('Passwords do not match.');
+    if (!formData.user_password) {
+      setError('User password is required.');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.user_password.length < 8) {
+      setError('User password must be at least 8 characters long.');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.user_password !== formData.user_password_confirm) {
+      setError('User passwords do not match.');
       setLoading(false);
       return;
     }
 
     try {
-      const response = await axiosInstance.post(`${API_BASE_URL}/register/`, formData);
+      const response = await axiosInstance.post(`/api/organizations/register/`, formData);
       
       alert(
-        `${response.data.message || 'Organization registered successfully!'}\n\n` +
-        `Organization Username: ${formData.username}\n` +
-        `Please save these credentials securely!\n\n` +
-        `You can now sign in as an event leader using these credentials.`
+        `${response.data.message || 'Organization and user registered successfully!'}\n\n` +
+        `User Username: ${formData.user_username}\n` +
+        `Please sign in with your user credentials.`
       );
       
-      navigate('/login');
+      navigate('/login'); // Navigate to regular user login
     } catch (err: any) {
+      console.error(err);
       const errorData = err.response?.data;
       if (errorData) {
         const errorMessages: string[] = [];
@@ -166,43 +182,92 @@ function RegisterOrganization() {
           </div>
 
           <div className="border-t border-gray-200 pt-4">
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">Organization Login Credentials</h3>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">Your User Account Details</h3>
             <p className="text-sm text-gray-600 mb-4">
-              These credentials will be used by organization admins to sign in and manage events.
+              These credentials will be used to sign in. You will be automatically associated with this organization.
             </p>
 
             <div className="space-y-4">
               <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-                  Organization Username *
+                <label htmlFor="user_username" className="block text-sm font-medium text-gray-700 mb-2">
+                  Username *
                 </label>
                 <input
                   type="text"
-                  id="username"
-                  name="username"
-                  value={formData.username}
+                  id="user_username"
+                  name="user_username"
+                  value={formData.user_username}
                   onChange={handleChange}
                   required
                   minLength={3}
                   maxLength={150}
-                  placeholder="e.g., csclub_admin"
+                  placeholder="e.g., org_admin_user"
                   className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 <small className="text-gray-500 text-xs mt-1 block">
-                  This will be the username for organization login (min 3 characters)
+                  This will be your personal username (min 3 characters)
                 </small>
+              </div>
+
+              <div>
+                <label htmlFor="user_email" className="block text-sm font-medium text-gray-700 mb-2">
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  id="user_email"
+                  name="user_email"
+                  value={formData.user_email}
+                  onChange={handleChange}
+                  required
+                  placeholder="e.g., admin@myorg.com"
+                  className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                    Organization Password *
+                  <label htmlFor="user_first_name" className="block text-sm font-medium text-gray-700 mb-2">
+                    First Name
+                  </label>
+                  <input
+                    type="text"
+                    id="user_first_name"
+                    name="user_first_name"
+                    value={formData.user_first_name}
+                    onChange={handleChange}
+                    placeholder="Optional"
+                    maxLength={150}
+                    className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="user_last_name" className="block text-sm font-medium text-gray-700 mb-2">
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    id="user_last_name"
+                    name="user_last_name"
+                    value={formData.user_last_name}
+                    onChange={handleChange}
+                    placeholder="Optional"
+                    maxLength={150}
+                    className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="user_password" className="block text-sm font-medium text-gray-700 mb-2">
+                    Password *
                   </label>
                   <input
                     type="password"
-                    id="password"
-                    name="password"
-                    value={formData.password}
+                    id="user_password"
+                    name="user_password"
+                    value={formData.user_password}
                     onChange={handleChange}
                     required
                     minLength={8}
@@ -213,14 +278,14 @@ function RegisterOrganization() {
                 </div>
                 
                 <div>
-                  <label htmlFor="password_confirm" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="user_password_confirm" className="block text-sm font-medium text-gray-700 mb-2">
                     Confirm Password *
                   </label>
                   <input
                     type="password"
-                    id="password_confirm"
-                    name="password_confirm"
-                    value={formData.password_confirm}
+                    id="user_password_confirm"
+                    name="user_password_confirm"
+                    value={formData.user_password_confirm}
                     onChange={handleChange}
                     required
                     minLength={8}
@@ -233,13 +298,12 @@ function RegisterOrganization() {
           </div>
           
           <div className="bg-yellow-50 border border-yellow-200 p-4 rounded text-sm text-yellow-800">
-            <p><strong>Important:</strong> Save these credentials securely. Organization admins will use these to sign in. 
-            Your organization will need to be verified by site administrators before it can be publicly listed.</p>
+            <p><strong>Important:</strong> You will sign in with the user credentials you create above. Your organization will need to be verified by site administrators before it can be publicly listed.</p>
           </div>
           
-          <button 
-            type="submit" 
-            disabled={loading} 
+          <button
+            type="submit"
+            disabled={loading}
             className="w-full bg-primary text-white py-3 rounded font-medium hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Registering...' : 'Register Organization'}
@@ -248,7 +312,7 @@ function RegisterOrganization() {
         
         <div className="mt-6 text-center space-y-2 text-sm">
           <p className="text-gray-600">
-            Already have organization credentials? <Link to="/login" className="text-primary hover:text-primary-dark font-medium">Sign in as Event Leader</Link>
+            Already have an account? <Link to="/login" className="text-primary hover:text-primary-dark font-medium">Sign in</Link>
           </p>
           <p className="text-gray-600">
             <Link to="/" className="text-primary hover:text-primary-dark font-medium">Back to Home</Link>

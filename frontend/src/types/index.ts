@@ -5,6 +5,7 @@ export interface User {
   first_name?: string;
   last_name?: string;
   name?: string;
+  organization?: Organization; // Add this line
 }
 
 export interface Organization {

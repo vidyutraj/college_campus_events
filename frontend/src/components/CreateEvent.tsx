@@ -31,7 +31,7 @@ export default function CreateEvent() {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const navigate = useNavigate();
-    const { organization, isAuthenticated, loading } = useAuth();
+    const { isAuthenticated, loading, organization, isOrganizationLeader } = useAuth();
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -76,9 +76,9 @@ export default function CreateEvent() {
         setError("");
         setSuccess("");
 
-        if (!organization) {
+        if (organization) {
             setError(
-                "Authentication error. Please refresh and try again."
+                "Authentication error: User is not associated with an organization. Please refresh and try again."
             );
             window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
@@ -102,7 +102,7 @@ export default function CreateEvent() {
                 category_id: formData.categoryId,
                 subcategory: formData.subcategory,
                 employers_in_attendance: formData.employersInAttendance,
-                host_organization: organization.id,
+                host_organization: organization,
             };
 
             if (payload.start_datetime > payload.end_datetime) {
@@ -145,12 +145,11 @@ export default function CreateEvent() {
             </div>
         );
     }
-
-    if (!organization) {
+    if (!isOrganizationLeader) {
         return (
             <div className="container mx-auto p-4">
                 <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
-                <p>You must be logged in as an organization to create an event.</p>
+                <p>You must be logged in as a user associated with an organization to create an event.</p>
                 <button
                     onClick={() => navigate("/events")}
                     className="mt-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"

@@ -88,15 +88,18 @@ def check_auth(request):
     """Check if user is authenticated"""
     if request.user.is_authenticated:
         user_type = 'student'
+        organization = None
         if hasattr(request.user, 'org_leader_profile'):
             user_type = 'organization_leader'
+            organization = request.user.org_leader_profile.organization
         elif hasattr(request.user, 'site_admin_profile'):
             user_type = 'site_admin'
         
         return Response({
             'is_authenticated': True,
             'user': UserSerializer(request.user).data,
-            'user_type': user_type
+            'user_type': user_type,
+            'organization': organization
         })
     return Response({
         'is_authenticated': False
