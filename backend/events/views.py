@@ -54,7 +54,11 @@ class EventViewSet(viewsets.ModelViewSet):
         return queryset
 
     def perform_create(self, serializer):
-        serializer.save(host_user=self.request.user)
+        host_user = None
+        if self.request.user.is_authenticated:
+            host_user = self.request.user
+        
+        serializer.save(host_user=host_user)
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def rsvp(self, request, pk=None):
