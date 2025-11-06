@@ -4,7 +4,7 @@ import axiosInstance from '../utils/axiosConfig';
 import type { Event, Category, Organization } from '../types';
 
 const API_BASE_URL = '/api/events/';
-const CATEGORIES_URL = '/api/events/categories/';
+const CATEGORIES_URL = '/api/categories/';
 const ORGANIZATIONS_URL = '/api/organizations/';
 
 interface Filters {
