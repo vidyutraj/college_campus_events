@@ -149,7 +149,7 @@ function EventDetail() {
   if (error || !event) {
     return (
       <div className="max-w-7xl mx-auto px-5 py-8">
-        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-sm mb-4">
+        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded mb-4">
           {error || 'Event not found'}
         </div>
         <Link to="/events" className="text-primary hover:text-primary-dark">← Back to Events</Link>
@@ -163,19 +163,19 @@ function EventDetail() {
         ← Back to {fromAdmin ? 'Event Requests' : 'Events'}
       </Link>
       {event.status === "cancelled" && (
-        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-sm mb-4">
+        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded mb-4">
           This event has been cancelled.
         </div>
       )}
 
       {event.status === "draft" && (
-        <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 p-4 rounded-sm mb-4">
+        <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 p-4 rounded mb-4">
           This event is currently a draft and not yet published.
         </div>
       )}
 
       {!event.is_approved && (
-        <div className="bg-blue-50 border border-blue-200 text-blue-700 p-4 rounded-sm mb-4">
+        <div className="bg-blue-50 border border-blue-200 text-blue-700 p-4 rounded mb-4">
           This event is awaiting approval.
         </div>
       )}
@@ -186,11 +186,11 @@ function EventDetail() {
             <div className="text-gray-700 font-medium">Admin Controls</div>
             <div className="flex items-center gap-3">
               {!editing ? (
-                <button onClick={handleEditToggle} className="px-4 py-2 rounded-sm bg-gray-100 hover:bg-gray-200">Edit</button>
+                <button onClick={handleEditToggle} className="px-4 py-2 rounded bg-gray-100 hover:bg-gray-200">Edit</button>
               ) : (
                 <>
-                  <button onClick={handleSave} disabled={saving} className="px-4 py-2 rounded-sm bg-primary text-white hover:bg-primary-dark disabled:opacity-50">{saving ? 'Saving...' : 'Save'}</button>
-                  <button onClick={handleEditToggle} disabled={saving} className="px-4 py-2 rounded-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50">Cancel</button>
+                  <button onClick={handleSave} disabled={saving} className="px-4 py-2 rounded bg-primary text-white hover:bg-primary-dark disabled:opacity-50">{saving ? 'Saving...' : 'Save'}</button>
+                  <button onClick={handleEditToggle} disabled={saving} className="px-4 py-2 rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50">Cancel</button>
                 </>
               )}
             </div>
@@ -200,19 +200,19 @@ function EventDetail() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div>
                 <label className="block text-sm text-gray-700 mb-1">Title</label>
-                <input value={form.title || ''} onChange={e => handleFieldChange('title', e.target.value)} className="w-full border border-gray-300 rounded-sm px-3 py-2" />
+                <input value={form.title || ''} onChange={e => handleFieldChange('title', e.target.value)} className="w-full border border-gray-300 rounded px-3 py-2" />
               </div>
               <div>
                 <label className="block text-sm text-gray-700 mb-1">Location</label>
-                <input value={form.location || ''} onChange={e => handleFieldChange('location', e.target.value)} className="w-full border border-gray-300 rounded-sm px-3 py-2" />
+                <input value={form.location || ''} onChange={e => handleFieldChange('location', e.target.value)} className="w-full border border-gray-300 rounded px-3 py-2" />
               </div>
               <div>
                 <label className="block text-sm text-gray-700 mb-1">Room</label>
-                <input value={form.room || ''} onChange={e => handleFieldChange('room', e.target.value)} className="w-full border border-gray-300 rounded-sm px-3 py-2" />
+                <input value={form.room || ''} onChange={e => handleFieldChange('room', e.target.value)} className="w-full border border-gray-300 rounded px-3 py-2" />
               </div>
               <div>
                 <label className="block text-sm text-gray-700 mb-1">Modality</label>
-                <select value={form.modality || 'in-person'} onChange={e => handleFieldChange('modality', e.target.value)} className="w-full border border-gray-300 rounded-sm px-3 py-2">
+                <select value={form.modality || 'in-person'} onChange={e => handleFieldChange('modality', e.target.value)} className="w-full border border-gray-300 rounded px-3 py-2">
                   <option value="in-person">In-Person</option>
                   <option value="online">Online</option>
                   <option value="hybrid">Hybrid</option>
@@ -220,15 +220,15 @@ function EventDetail() {
               </div>
               <div>
                 <label className="block text-sm text-gray-700 mb-1">Start</label>
-                <input type="datetime-local" value={form.start_datetime ? new Date(form.start_datetime).toISOString().slice(0,16) : ''} onChange={e => handleFieldChange('start_datetime', new Date(e.target.value).toISOString())} className="w-full border border-gray-300 rounded-sm px-3 py-2" />
+                <input type="datetime-local" value={form.start_datetime ? new Date(form.start_datetime).toISOString().slice(0,16) : ''} onChange={e => handleFieldChange('start_datetime', new Date(e.target.value).toISOString())} className="w-full border border-gray-300 rounded px-3 py-2" />
               </div>
               <div>
                 <label className="block text-sm text-gray-700 mb-1">End</label>
-                <input type="datetime-local" value={form.end_datetime ? new Date(form.end_datetime).toISOString().slice(0,16) : ''} onChange={e => handleFieldChange('end_datetime', new Date(e.target.value).toISOString())} className="w-full border border-gray-300 rounded-sm px-3 py-2" />
+                <input type="datetime-local" value={form.end_datetime ? new Date(form.end_datetime).toISOString().slice(0,16) : ''} onChange={e => handleFieldChange('end_datetime', new Date(e.target.value).toISOString())} className="w-full border border-gray-300 rounded px-3 py-2" />
               </div>
               <div className="md:col-span-2">
                 <label className="block text-sm text-gray-700 mb-1">Description</label>
-                <textarea value={form.description || ''} onChange={e => handleFieldChange('description', e.target.value)} className="w-full border border-gray-300 rounded-sm px-3 py-2" rows={5} />
+                <textarea value={form.description || ''} onChange={e => handleFieldChange('description', e.target.value)} className="w-full border border-gray-300 rounded px-3 py-2" rows={5} />
               </div>
             </div>
           )}
@@ -250,7 +250,7 @@ function EventDetail() {
         <div className="lg:col-span-2 space-y-6">
           {/* Event Information */}
           <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-xs">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Event Information</h2>
+            <h2 className="text-2xl font-bold mb-4">Event Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <span className="block text-sm font-medium text-gray-500 mb-1">📅 Date & Time</span>
@@ -295,21 +295,21 @@ function EventDetail() {
 
               <div>
                 <span className="block text-sm font-medium text-gray-500 mb-1">👥 RSVPs</span>
-                <div className="text-gray-800 font-medium">{event.rsvp_count || 0} people RSVPed</div>
+                <div className="font-medium">{event.rsvp_count || 0} people RSVPed</div>
               </div>
             </div>
           </div>
 
           {/* Description */}
           <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-xs">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Description</h2>
+            <h2 className="text-2xl font-bold mb-4">Description</h2>
             <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{event.description}</p>
           </div>
 
           {/* Employers in Attendance */}
           {event.employers_in_attendance && (
             <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-xs">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">Employers in Attendance</h2>
+              <h2 className="text-2xl font-bold mb-4">Employers in Attendance</h2>
               <p className="text-gray-700">{event.employers_in_attendance}</p>
             </div>
           )}
@@ -317,7 +317,7 @@ function EventDetail() {
           {/* Perks & Benefits */}
           {(event.has_free_food || event.has_free_swag || event.other_perks) && (
             <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-xs">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">Perks & Benefits</h2>
+              <h2 className="text-2xl font-bold mb-4">Perks & Benefits</h2>
               <div className="space-y-3">
                 {event.has_free_food && (
                   <div className="flex items-center gap-3">
@@ -343,24 +343,24 @@ function EventDetail() {
 
           {/* RSVP Section */}
           <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-xs">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">RSVP</h2>
-            <p className="text-gray-600 mb-4">{event.rsvp_count || 0} people have RSVPed to this event</p>
+            <h2 className="text-2xl font-bold mb-4">RSVP</h2>
+            <p className="text-foreground/80 mb-4">{event.rsvp_count || 0} people have RSVPed to this event</p>
             
             {rsvpError && (
-              <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-sm mb-4">
+              <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded mb-4">
                 {rsvpError}
               </div>
             )}
             
             {event.user_has_rsvp ? (
               <div className="flex items-center gap-4 flex-wrap">
-                <span className="bg-green-100 text-green-800 px-4 py-2 rounded-sm font-medium">
+                <span className="bg-green-100 text-green-800 px-4 py-2 rounded font-medium">
                   ✓ You have RSVPed
                 </span>
                 <button 
                   onClick={handleCancelRSVP} 
                   disabled={rsvpLoading}
-                  className="bg-red-500 text-white px-6 py-2 rounded-sm hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {rsvpLoading ? 'Cancelling...' : 'Cancel RSVP'}
                 </button>
@@ -371,7 +371,7 @@ function EventDetail() {
                 <button 
                   onClick={handleRSVP} 
                   disabled={rsvpLoading}
-                  className="bg-primary text-white px-6 py-2 rounded-sm hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-primary text-white px-6 py-2 rounded hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {rsvpLoading ? 'RSVPing...' : 'RSVP to Event'}
                 </button>
@@ -382,8 +382,8 @@ function EventDetail() {
 
         {/* Sidebar */}
         <div className="lg:col-span-1">
-          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-xs sticky top-8">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">Quick Info</h3>
+          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-xs sticky top-24">
+            <h3 className="text-xl font-bold mb-4">Quick Info</h3>
             <div className="space-y-3 text-sm">
               <div>
                 <strong className="block text-gray-600">Date:</strong>

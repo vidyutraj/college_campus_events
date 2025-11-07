@@ -9,6 +9,8 @@ import RegisterStudent from "./components/RegisterStudent";
 import RegisterOrganization from "./components/RegisterOrganization";
 import CreateEvent from "./components/CreateEvent";
 import AdminEventRequests from "./components/AdminEventRequests";
+import { IoIosMenu } from "react-icons/io";
+
 function AppHeader() {
     const { user, userType, organization, logout, isAuthenticated } = useAuth();
 
@@ -18,17 +20,21 @@ function AppHeader() {
     };
 
     return (
-        <header className="bg-primary text-white shadow-md">
-            <div className="max-w-7xl mx-auto px-5 py-5 flex justify-between items-center flex-wrap gap-5">
-                <Link to="/" className="no-underline text-white">
-                    <h1 className="text-3xl font-bold m-0">
-                        College Campus Events
-                    </h1>
-                </Link>
-                <nav className="flex items-center gap-5 flex-wrap">
+        <header className="bg-white shadow-sm sticky top-0 z-100">
+            <div className="max-w-7xl mx-auto px-5 py-3 flex justify-between items-center flex-wrap gap-5">
+                <div className="flex items-center gap-4 font-stack">
+                    {/* <IoIosMenu className="opacity-80" size={25} /> */}
+                    <Link to="/" className="flex gap-2">
+                        <img src="/campus-buzz.svg" className="w-8 -mt-1"></img>
+                            <h1 className="text-2xl font-bold m-0">
+                                CampusBuzz
+                            </h1>
+                    </Link>
+                </div>
+                <nav className="flex items-center gap-3 flex-wrap">
                     {isAuthenticated ? (
                         <>
-                            <span className="text-white/90 text-sm">
+                            <span className="text-sm">
                                 {organization ? (
                                     <>
                                         Welcome, {organization.name}{" "}
@@ -49,7 +55,7 @@ function AppHeader() {
                             {userType === "student" && (
                                 <Link
                                     to="/events"
-                                    className="text-white no-underline font-medium px-4 py-2 rounded-sm transition-colors hover:bg-white/10"
+                                    className="font-medium px-4 py-2 rounded transition-colors hover:bg-white/10"
                                 >
                                     Events
                                 </Link>
@@ -58,19 +64,19 @@ function AppHeader() {
                                 <>
                                     <Link
                                         to="/events"
-                                        className="text-white no-underline font-medium px-4 py-2 rounded-sm transition-colors hover:bg-white/10"
+                                        className="font-medium px-4 py-2 rounded transition-colors hover:bg-white/10"
                                     >
                                         Events
                                     </Link>
                                     <Link
                                         to="/leader/dashboard"
-                                        className="text-white no-underline font-medium px-4 py-2 rounded-sm transition-colors hover:bg-white/10"
+                                        className="font-medium px-4 py-2 rounded transition-colors hover:bg-white/10"
                                     >
                                         Dashboard
                                     </Link>
                                     <Link
                                         to="/events/create"
-                                        className="text-white no-underline font-medium px-4 py-2 rounded-sm transition-colors hover:bg-white/10"
+                                        className="font-medium px-4 py-2 rounded transition-colors hover:bg-white/10"
                                     >
                                         Create Event
                                     </Link>
@@ -80,13 +86,13 @@ function AppHeader() {
                                 <>
                                     <Link
                                         to="/events"
-                                        className="text-white no-underline font-medium px-4 py-2 rounded-sm transition-colors hover:bg-white/10"
+                                        className="font-medium px-4 py-2 rounded transition-colors hover:bg-white/10"
                                     >
                                         Events
                                     </Link>
                                     <Link
                                         to="/admin/event-requests"
-                                        className="text-white no-underline font-medium px-4 py-2 rounded-sm transition-colors hover:bg-white/10"
+                                        className="font-medium px-4 py-2 rounded transition-colors hover:bg-white/10"
                                     >
                                         Event Requests
                                     </Link>
@@ -94,7 +100,7 @@ function AppHeader() {
                             )}
                             <button
                                 onClick={handleLogout}
-                                className="text-white bg-white/20 hover:bg-white/30 border-0 cursor-pointer font-medium px-4 py-2 rounded-sm transition-colors"
+                                className="bg-white/20 hover:bg-white/30 border-0 cursor-pointer font-medium px-4 py-2 rounded transition-colors"
                             >
                                 Logout
                             </button>
@@ -103,13 +109,13 @@ function AppHeader() {
                         <>
                             <Link
                                 to="/events"
-                                className="text-white no-underline font-medium px-4 py-2 rounded-sm transition-colors hover:bg-white/10"
+                                className="font-medium px-4 py-1 rounded-full transition-colors text-white border border-secondary bg-secondary hover:bg-secondary-dark hover:border-secondary-dark"
                             >
                                 Browse Events
                             </Link>
                             <Link
                                 to="/login"
-                                className="text-white no-underline font-medium px-4 py-2 rounded-sm transition-colors hover:bg-white/10"
+                                className="font-medium px-4 py-1 rounded-full transition-all border bg-white hover:brightness-90"
                             >
                                 Sign In
                             </Link>
@@ -144,11 +150,11 @@ function App() {
                         />
                         <Route path="/login" element={<Login />} />
                         <Route
-                            path="/register/student"
+                            path="/register"
                             element={<RegisterStudent />}
                         />
                         <Route
-                            path="/register/organization"
+                            path="/create-organization"
                             element={<RegisterOrganization />}
                         />
                     </Routes>

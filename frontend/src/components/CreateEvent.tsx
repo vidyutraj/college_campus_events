@@ -165,12 +165,12 @@ export default function CreateEvent() {
             <h1 className="text-2xl font-bold mb-4">Create New Event</h1>
 
             {error && (
-                <div className="bg-red-100 border border-red-400 text-red-700 p-4 rounded-sm mb-4">
+                <div className="bg-red-100 border border-red-400 text-red-700 p-4 rounded mb-4">
                     {error}
                 </div>
             )}
             {success && (
-                <div className="bg-green-100 border border-green-400 text-green-700 p-4 rounded-sm mb-4">
+                <div className="bg-green-100 border border-green-400 text-green-700 p-4 rounded mb-4">
                     {success}
                 </div>
             )}

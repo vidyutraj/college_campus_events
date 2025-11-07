@@ -43,7 +43,7 @@ export default function FormField({
                     name={name}
                     checked={Boolean(value)}
                     onChange={onChange}
-                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded-sm focus:ring-indigo-500"
+                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                 />
                 <span className="text-sm text-gray-900">{label}{required && " *"}</span>
             </label>

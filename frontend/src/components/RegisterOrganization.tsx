@@ -185,34 +185,16 @@ function RegisterOrganization() {
     return (
         <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-5 py-12 bg-gray-50">
             <div className="bg-white border border-gray-200 rounded-lg shadow-md p-8 w-full max-w-2xl">
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                <h2 className="text-3xl font-bold mb-2">
                     Register Your Organization
                 </h2>
-                <p className="text-gray-600 mb-4">
+                <p className="text-foreground/80 mb-4">
                     Register your student organization or club to start posting
                     events
                 </p>
-                <div className="bg-blue-50 border border-blue-200 p-4 rounded-sm mb-6 text-sm text-blue-800">
-                    <p className="mb-2">
-                        Register your student organization to start posting
-                        events.
-                    </p>
-                    {useExistingAccount ? (
-                        <p>
-                            {isAuthenticated
-                                ? "You are signed in. Your current account will be linked to this organization."
-                                : "Enter your existing student account credentials to link it with this organization."}
-                        </p>
-                    ) : (
-                        <p>
-                            Create a new account for this organization’s
-                            management.
-                        </p>
-                    )}
-                </div>
 
                 {error && (
-                    <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-sm mb-4">
+                    <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded mb-4">
                         {error}
                     </div>
                 )}
@@ -235,7 +217,7 @@ function RegisterOrganization() {
                             required
                             placeholder="e.g., Computer Science Club"
                             maxLength={200}
-                            className="w-full border border-gray-300 rounded-sm px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
+                            className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
                         />
                     </div>
 
@@ -253,20 +235,23 @@ function RegisterOrganization() {
                             onChange={handleChange}
                             rows={5}
                             placeholder="Tell us about your organization..."
-                            className="w-full border border-gray-300 rounded-sm px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
+                            className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
                         />
                     </div>
 
                     {/* Account Details Section */}
                     <div className="border-t border-gray-200 pt-4">
-                        <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                        <h3 className="text-xl font-semibold">
                             Your Account
                         </h3>
+                        <p className="text-foreground/80 text-sm mb-4">
+                            This account will be used to create and manage the organization and its events.
+                        </p>
 
                         {!isAuthenticated && (
-                            <div className="flex items-center justify-between bg-gray-50 p-3 rounded-sm border border-gray-200 mb-4">
+                            <div className="flex items-center justify-between bg-gray-50 p-3 rounded border border-gray-200 mb-4">
                                 <span className="text-sm font-medium text-gray-700">
-                                    I want to link my existing account
+                                    I want to link an existing account
                                 </span>
                                 <label
                                     htmlFor="toggle-existing"
@@ -309,7 +294,7 @@ function RegisterOrganization() {
                                         value={formData.user_username || ""}
                                         onChange={handleChange}
                                         required
-                                        className="w-full border border-gray-300 rounded-sm px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
+                                        className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
                                     />
                                 </div>
                                 {!useExistingAccount && (
@@ -331,7 +316,7 @@ function RegisterOrganization() {
                                                 }
                                                 onChange={handleChange}
                                                 required
-                                                className="w-full border border-gray-300 rounded-sm px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
+                                                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
                                             />
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -350,7 +335,7 @@ function RegisterOrganization() {
                                                         ""
                                                     }
                                                     onChange={handleChange}
-                                                    className="border border-gray-300 rounded-sm px-4 py-2 w-full"
+                                                    className="border border-gray-300 rounded px-4 py-2 w-full"
                                                 />
                                             </div>
                                             <div>
@@ -368,7 +353,7 @@ function RegisterOrganization() {
                                                         ""
                                                     }
                                                     onChange={handleChange}
-                                                    className="border border-gray-300 rounded-sm px-4 py-2 w-full"
+                                                    className="border border-gray-300 rounded px-4 py-2 w-full"
                                                 />
                                             </div>
                                         </div>
@@ -388,7 +373,7 @@ function RegisterOrganization() {
                                         onChange={handleChange}
                                         required
                                         minLength={8}
-                                        className="w-full border border-gray-300 rounded-sm px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
+                                        className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
                                     />
                                 </div>
                                 {!useExistingAccount && (
@@ -409,7 +394,7 @@ function RegisterOrganization() {
                                             onChange={handleChange}
                                             required
                                             minLength={8}
-                                            className="w-full border border-gray-300 rounded-sm px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
+                                            className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
                                         />
                                     </div>
                                 )}
@@ -419,7 +404,7 @@ function RegisterOrganization() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-primary text-white py-3 rounded-sm font-medium hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="cursor-pointer w-full bg-secondary text-white py-3 rounded-full font-medium hover:bg-secondary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {loading ? "Registering..." : "Register Organization"}
                     </button>
