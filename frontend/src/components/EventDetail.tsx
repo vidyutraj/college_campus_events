@@ -1,18 +1,25 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import axiosInstance from '../utils/axiosConfig';
 import type { Event } from '../types';
 import { AxiosError } from 'axios';
+import { useAuth } from '../context/AuthContext';
 
 const API_BASE_URL = '/api/events/';
 
 function EventDetail() {
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
+  const fromAdmin = (location.state as any)?.fromAdmin === true;
+  const { isSiteAdmin } = useAuth();
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [rsvpLoading, setRsvpLoading] = useState(false);
   const [rsvpError, setRsvpError] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState<Partial<Event>>({});
 
   useEffect(() => {
     fetchEvent();
@@ -23,12 +30,47 @@ function EventDetail() {
       setLoading(true);
       const response = await axiosInstance.get(`${API_BASE_URL}${id}/`);
       setEvent(response.data);
+      setForm(response.data);
       setError(null);
     } catch (err: any) {
       setError('Failed to load event details. Please try again later.');
       console.error('Error fetching event:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleEditToggle = () => {
+    if (!event) return;
+    setForm(event);
+    setEditing(!editing);
+  };
+
+  const handleFieldChange = (field: keyof Event, value: any) => {
+    setForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSave = async () => {
+    if (!id) return;
+    try {
+      setSaving(true);
+      const payload: any = {
+        title: form.title,
+        description: form.description,
+        location: form.location,
+        room: form.room,
+        start_datetime: form.start_datetime,
+        end_datetime: form.end_datetime,
+        modality: form.modality,
+      };
+      await axiosInstance.put(`${API_BASE_URL}${id}/`, payload);
+      await fetchEvent();
+      setEditing(false);
+    } catch (err) {
+      console.error('Error saving event:', err);
+      alert('Failed to save changes.');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -117,7 +159,9 @@ function EventDetail() {
 
   return (
     <div className="max-w-7xl mx-auto px-5 py-8">
-      <Link to="/events" className="text-primary hover:text-primary-dark mb-6 inline-block">← Back to Events</Link>
+      <Link to={fromAdmin ? "/admin/event-requests" : "/events"} className="text-primary hover:text-primary-dark mb-6 inline-block">
+        ← Back to {fromAdmin ? 'Event Requests' : 'Events'}
+      </Link>
       {event.status === "cancelled" && (
         <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded mb-4">
           This event has been cancelled.
@@ -133,6 +177,61 @@ function EventDetail() {
       {!event.is_approved && (
         <div className="bg-blue-50 border border-blue-200 text-blue-700 p-4 rounded mb-4">
           This event is awaiting approval.
+        </div>
+      )}
+
+      {isSiteAdmin && (
+        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm mb-6">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div className="text-gray-700 font-medium">Admin Controls</div>
+            <div className="flex items-center gap-3">
+              {!editing ? (
+                <button onClick={handleEditToggle} className="px-4 py-2 rounded bg-gray-100 hover:bg-gray-200">Edit</button>
+              ) : (
+                <>
+                  <button onClick={handleSave} disabled={saving} className="px-4 py-2 rounded bg-primary text-white hover:bg-primary-dark disabled:opacity-50">{saving ? 'Saving...' : 'Save'}</button>
+                  <button onClick={handleEditToggle} disabled={saving} className="px-4 py-2 rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50">Cancel</button>
+                </>
+              )}
+            </div>
+          </div>
+
+          {editing && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <div>
+                <label className="block text-sm text-gray-700 mb-1">Title</label>
+                <input value={form.title || ''} onChange={e => handleFieldChange('title', e.target.value)} className="w-full border border-gray-300 rounded px-3 py-2" />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-700 mb-1">Location</label>
+                <input value={form.location || ''} onChange={e => handleFieldChange('location', e.target.value)} className="w-full border border-gray-300 rounded px-3 py-2" />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-700 mb-1">Room</label>
+                <input value={form.room || ''} onChange={e => handleFieldChange('room', e.target.value)} className="w-full border border-gray-300 rounded px-3 py-2" />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-700 mb-1">Modality</label>
+                <select value={form.modality || 'in-person'} onChange={e => handleFieldChange('modality', e.target.value)} className="w-full border border-gray-300 rounded px-3 py-2">
+                  <option value="in-person">In-Person</option>
+                  <option value="online">Online</option>
+                  <option value="hybrid">Hybrid</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm text-gray-700 mb-1">Start</label>
+                <input type="datetime-local" value={form.start_datetime ? new Date(form.start_datetime).toISOString().slice(0,16) : ''} onChange={e => handleFieldChange('start_datetime', new Date(e.target.value).toISOString())} className="w-full border border-gray-300 rounded px-3 py-2" />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-700 mb-1">End</label>
+                <input type="datetime-local" value={form.end_datetime ? new Date(form.end_datetime).toISOString().slice(0,16) : ''} onChange={e => handleFieldChange('end_datetime', new Date(e.target.value).toISOString())} className="w-full border border-gray-300 rounded px-3 py-2" />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm text-gray-700 mb-1">Description</label>
+                <textarea value={form.description || ''} onChange={e => handleFieldChange('description', e.target.value)} className="w-full border border-gray-300 rounded px-3 py-2" rows={5} />
+              </div>
+            </div>
+          )}
         </div>
       )}
 

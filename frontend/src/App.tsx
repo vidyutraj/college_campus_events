@@ -8,6 +8,7 @@ import Login from "./components/Login";
 import RegisterStudent from "./components/RegisterStudent";
 import RegisterOrganization from "./components/RegisterOrganization";
 import CreateEvent from "./components/CreateEvent";
+import AdminEventRequests from "./components/AdminEventRequests";
 function AppHeader() {
     const { user, userType, organization, logout, isAuthenticated } = useAuth();
 
@@ -75,6 +76,22 @@ function AppHeader() {
                                     </Link>
                                 </>
                             )}
+                            {userType === "site_admin" && (
+                                <>
+                                    <Link
+                                        to="/events"
+                                        className="text-white no-underline font-medium px-4 py-2 rounded transition-colors hover:bg-white/10"
+                                    >
+                                        Events
+                                    </Link>
+                                    <Link
+                                        to="/admin/event-requests"
+                                        className="text-white no-underline font-medium px-4 py-2 rounded transition-colors hover:bg-white/10"
+                                    >
+                                        Event Requests
+                                    </Link>
+                                </>
+                            )}
                             <button
                                 onClick={handleLogout}
                                 className="text-white bg-white/20 hover:bg-white/30 border-0 cursor-pointer font-medium px-4 py-2 rounded transition-colors"
@@ -120,6 +137,10 @@ function App() {
                         <Route
                             path="/events/create"
                             element={<CreateEvent />}
+                        />
+                        <Route
+                            path="/admin/event-requests"
+                            element={<AdminEventRequests />}
                         />
                         <Route path="/login" element={<Login />} />
                         <Route
