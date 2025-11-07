@@ -72,7 +72,7 @@ function AdminEventRequests() {
   if (!isSiteAdmin) {
     return (
       <div className="max-w-7xl mx-auto px-5 py-8">
-        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded">Access denied.</div>
+        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-sm">Access denied.</div>
       </div>
     );
   }
@@ -86,13 +86,13 @@ function AdminEventRequests() {
       {loading ? (
         <div className="text-center py-20 text-gray-600 text-xl">Loading pending events...</div>
       ) : error ? (
-        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded mb-4">{error}</div>
+        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-sm mb-4">{error}</div>
       ) : events.length === 0 ? (
         <div className="text-center py-20 text-gray-600 text-xl">No pending event requests.</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {events.map(event => (
-            <div key={event.id} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <div key={event.id} className="bg-white border border-gray-200 rounded-lg p-6 shadow-xs">
               <div className="cursor-pointer" onClick={() => navigate(`/events/${event.id}`, { state: { fromAdmin: true } })}>
                 <h3 className="text-xl font-bold text-gray-800 mb-2">{event.title}</h3>
                 <div className="text-sm text-gray-600 space-y-1 mb-3">
@@ -107,21 +107,21 @@ function AdminEventRequests() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => navigate(`/events/${event.id}`, { state: { fromAdmin: true } })}
-                  className="px-4 py-2 rounded bg-gray-100 text-gray-800 hover:bg-gray-200"
+                  className="px-4 py-2 rounded-sm bg-gray-100 text-gray-800 hover:bg-gray-200"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleApprove(event.id)}
                   disabled={actionLoading === event.id}
-                  className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 disabled:opacity-50"
+                  className="px-4 py-2 rounded-sm bg-green-600 text-white hover:bg-green-700 disabled:opacity-50"
                 >
                   {actionLoading === event.id ? 'Approving...' : 'Approve'}
                 </button>
                 <button
                   onClick={() => handleReject(event.id)}
                   disabled={actionLoading === event.id}
-                  className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+                  className="px-4 py-2 rounded-sm bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
                 >
                   {actionLoading === event.id ? 'Rejecting...' : 'Reject'}
                 </button>

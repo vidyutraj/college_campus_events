@@ -55,7 +55,7 @@ function Login() {
         <p className="text-gray-600 mb-6">Sign in with your user account</p>
         
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded mb-4">
+          <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-sm mb-4">
             {error}
           </div>
         )}
@@ -74,7 +74,7 @@ function Login() {
               required
               autoComplete="username"
               placeholder="Enter your username"
-              className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full border border-gray-300 rounded-sm px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
             />
           </div>
           
@@ -91,14 +91,14 @@ function Login() {
               required
               autoComplete="current-password"
               placeholder="Enter your password"
-              className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full border border-gray-300 rounded-sm px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
             />
           </div>
           
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary text-white py-3 rounded font-medium hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-primary text-white py-3 rounded-sm font-medium hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>

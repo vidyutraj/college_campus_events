@@ -138,7 +138,7 @@ export default function CreateEvent() {
                 <p>You must be logged in to create an event.</p>
                 <button
                     onClick={() => navigate("/login")}
-                    className="mt-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                    className="mt-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
                 >
                     Login
                 </button>
@@ -152,7 +152,7 @@ export default function CreateEvent() {
                 <p>You must be logged in as a user associated with an organization to create an event.</p>
                 <button
                     onClick={() => navigate("/events")}
-                    className="mt-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                    className="mt-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
                 >
                     View Events
                 </button>
@@ -165,12 +165,12 @@ export default function CreateEvent() {
             <h1 className="text-2xl font-bold mb-4">Create New Event</h1>
 
             {error && (
-                <div className="bg-red-100 border border-red-400 text-red-700 p-4 rounded mb-4">
+                <div className="bg-red-100 border border-red-400 text-red-700 p-4 rounded-sm mb-4">
                     {error}
                 </div>
             )}
             {success && (
-                <div className="bg-green-100 border border-green-400 text-green-700 p-4 rounded mb-4">
+                <div className="bg-green-100 border border-green-400 text-green-700 p-4 rounded-sm mb-4">
                     {success}
                 </div>
             )}
@@ -294,7 +294,7 @@ export default function CreateEvent() {
 
                 <button
                     type="submit"
-                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
                 >
                     Create Event
                 </button>

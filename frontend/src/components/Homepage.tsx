@@ -17,13 +17,13 @@ function Homepage() {
         <div className="flex gap-5 justify-center flex-wrap">
           <Link
             to="/events"
-            className="bg-white text-primary px-8 py-3.5 rounded text-base font-medium transition-all duration-300 hover:bg-gray-50 hover:-translate-y-0.5 hover:shadow-lg"
+            className="bg-white text-primary px-8 py-3.5 rounded-sm text-base font-medium transition-all duration-300 hover:bg-gray-50 hover:-translate-y-0.5 hover:shadow-lg"
           >
             Browse Events
           </Link>
           <Link
             to="/login"
-            className="bg-transparent text-white border-2 border-white px-8 py-3.5 rounded text-base font-medium transition-all duration-300 hover:bg-white/10 hover:-translate-y-0.5"
+            className="bg-transparent text-white border-2 border-white px-8 py-3.5 rounded-sm text-base font-medium transition-all duration-300 hover:bg-white/10 hover:-translate-y-0.5"
           >
             Sign In
           </Link>
@@ -33,7 +33,7 @@ function Homepage() {
       {/* Features Section */}
       <div className="max-w-7xl mx-auto px-5 pb-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white border border-gray-200 rounded-lg p-10 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+          <div className="bg-white border border-gray-200 rounded-lg p-10 text-center shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
             <div className="text-6xl mb-5">🎓</div>
             <h3 className="text-2xl font-semibold mb-4 text-gray-800">For Students</h3>
             <p className="text-gray-600 leading-relaxed mb-5">
@@ -44,7 +44,7 @@ function Homepage() {
             </Link>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-lg p-10 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+          <div className="bg-white border border-gray-200 rounded-lg p-10 text-center shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
             <div className="text-6xl mb-5">🏢</div>
             <h3 className="text-2xl font-semibold mb-4 text-gray-800">For Event Leaders</h3>
             <p className="text-gray-600 leading-relaxed mb-5">
@@ -60,7 +60,7 @@ function Homepage() {
             </div>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-lg p-10 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+          <div className="bg-white border border-gray-200 rounded-lg p-10 text-center shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
             <div className="text-6xl mb-5">📅</div>
             <h3 className="text-2xl font-semibold mb-4 text-gray-800">Event Discovery</h3>
             <p className="text-gray-600 leading-relaxed mb-5">
@@ -82,13 +82,13 @@ function Homepage() {
         <div className="flex gap-5 justify-center flex-wrap">
           <Link
             to="/register/student"
-            className="bg-white text-primary border-2 border-primary px-10 py-4 rounded text-lg font-medium transition-all duration-300 hover:bg-primary hover:text-white"
+            className="bg-white text-primary border-2 border-primary px-10 py-4 rounded-sm text-lg font-medium transition-all duration-300 hover:bg-primary hover:text-white"
           >
             Create Student Account
           </Link>
           <Link
             to="/events"
-            className="bg-transparent text-primary border-2 border-primary px-10 py-4 rounded text-lg font-medium transition-all duration-300 hover:bg-primary hover:text-white"
+            className="bg-transparent text-primary border-2 border-primary px-10 py-4 rounded-sm text-lg font-medium transition-all duration-300 hover:bg-primary hover:text-white"
           >
             Browse Events
           </Link>

@@ -49,7 +49,7 @@ function AppHeader() {
                             {userType === "student" && (
                                 <Link
                                     to="/events"
-                                    className="text-white no-underline font-medium px-4 py-2 rounded transition-colors hover:bg-white/10"
+                                    className="text-white no-underline font-medium px-4 py-2 rounded-sm transition-colors hover:bg-white/10"
                                 >
                                     Events
                                 </Link>
@@ -58,19 +58,19 @@ function AppHeader() {
                                 <>
                                     <Link
                                         to="/events"
-                                        className="text-white no-underline font-medium px-4 py-2 rounded transition-colors hover:bg-white/10"
+                                        className="text-white no-underline font-medium px-4 py-2 rounded-sm transition-colors hover:bg-white/10"
                                     >
                                         Events
                                     </Link>
                                     <Link
                                         to="/leader/dashboard"
-                                        className="text-white no-underline font-medium px-4 py-2 rounded transition-colors hover:bg-white/10"
+                                        className="text-white no-underline font-medium px-4 py-2 rounded-sm transition-colors hover:bg-white/10"
                                     >
                                         Dashboard
                                     </Link>
                                     <Link
                                         to="/events/create"
-                                        className="text-white no-underline font-medium px-4 py-2 rounded transition-colors hover:bg-white/10"
+                                        className="text-white no-underline font-medium px-4 py-2 rounded-sm transition-colors hover:bg-white/10"
                                     >
                                         Create Event
                                     </Link>
@@ -80,13 +80,13 @@ function AppHeader() {
                                 <>
                                     <Link
                                         to="/events"
-                                        className="text-white no-underline font-medium px-4 py-2 rounded transition-colors hover:bg-white/10"
+                                        className="text-white no-underline font-medium px-4 py-2 rounded-sm transition-colors hover:bg-white/10"
                                     >
                                         Events
                                     </Link>
                                     <Link
                                         to="/admin/event-requests"
-                                        className="text-white no-underline font-medium px-4 py-2 rounded transition-colors hover:bg-white/10"
+                                        className="text-white no-underline font-medium px-4 py-2 rounded-sm transition-colors hover:bg-white/10"
                                     >
                                         Event Requests
                                     </Link>
@@ -94,7 +94,7 @@ function AppHeader() {
                             )}
                             <button
                                 onClick={handleLogout}
-                                className="text-white bg-white/20 hover:bg-white/30 border-0 cursor-pointer font-medium px-4 py-2 rounded transition-colors"
+                                className="text-white bg-white/20 hover:bg-white/30 border-0 cursor-pointer font-medium px-4 py-2 rounded-sm transition-colors"
                             >
                                 Logout
                             </button>
@@ -103,13 +103,13 @@ function AppHeader() {
                         <>
                             <Link
                                 to="/events"
-                                className="text-white no-underline font-medium px-4 py-2 rounded transition-colors hover:bg-white/10"
+                                className="text-white no-underline font-medium px-4 py-2 rounded-sm transition-colors hover:bg-white/10"
                             >
                                 Browse Events
                             </Link>
                             <Link
                                 to="/login"
-                                className="text-white no-underline font-medium px-4 py-2 rounded transition-colors hover:bg-white/10"
+                                className="text-white no-underline font-medium px-4 py-2 rounded-sm transition-colors hover:bg-white/10"
                             >
                                 Sign In
                             </Link>
