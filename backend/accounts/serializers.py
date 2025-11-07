@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from .models import StudentProfile, OrganizationLeaderProfile, SiteAdminProfile
+from .models import StudentProfile, OrganizationLeaderProfile
+from organizations.serializers import OrganizationSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -84,7 +85,7 @@ class LoginSerializer(serializers.Serializer):
 
 class OrganizationLeaderProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    organization = serializers.StringRelatedField(read_only=True)
+    organization = OrganizationSerializer(read_only=True) # Use OrganizationSerializer to get full organization details
     
     class Meta:
         model = OrganizationLeaderProfile

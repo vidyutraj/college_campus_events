@@ -155,7 +155,7 @@ function Dashboard() {
         <h2 className="text-3xl font-bold text-gray-800">Upcoming Events</h2>
         <button 
           onClick={() => setShowFilters(!showFilters)} 
-          className="bg-primary text-white px-6 py-2 rounded hover:bg-primary-dark transition-colors relative"
+          className="cursor-pointer bg-primary text-white px-6 py-2 rounded-full hover:bg-primary-dark transition-colors relative"
         >
           {showFilters ? 'Hide Filters' : 'Show Filters'}
           {hasActiveFilters() && (
@@ -165,7 +165,7 @@ function Dashboard() {
       </div>
 
       {showFilters && (
-        <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6 shadow-sm">
+        <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6 shadow-xs">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <label htmlFor="category-filter" className="block text-sm font-medium text-gray-700 mb-2">
@@ -175,7 +175,7 @@ function Dashboard() {
                 id="category-filter"
                 value={filters.category}
                 onChange={(e) => handleFilterChange('category', e.target.value)}
-                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
               >
                 <option value="">All Categories</option>
                 {categories.map(category => (
@@ -194,7 +194,7 @@ function Dashboard() {
                 id="organization-filter"
                 value={filters.organization}
                 onChange={(e) => handleFilterChange('organization', e.target.value)}
-                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
               >
                 <option value="">All Organizations</option>
                 {organizations.map(org => (
@@ -213,7 +213,7 @@ function Dashboard() {
                 id="modality-filter"
                 value={filters.modality}
                 onChange={(e) => handleFilterChange('modality', e.target.value)}
-                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
               >
                 <option value="">All Types</option>
                 <option value="in-person">In-Person</option>
@@ -231,7 +231,7 @@ function Dashboard() {
                 id="start-date-filter"
                 value={filters.startDate}
                 onChange={(e) => handleFilterChange('startDate', e.target.value)}
-                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
               />
             </div>
 
@@ -244,7 +244,7 @@ function Dashboard() {
                 id="end-date-filter"
                 value={filters.endDate}
                 onChange={(e) => handleFilterChange('endDate', e.target.value)}
-                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
               />
             </div>
 
@@ -293,7 +293,7 @@ function Dashboard() {
       )}
 
       {events.length === 0 ? (
-        <div className="text-center py-20 text-gray-600 text-xl">
+        <div className="text-center py-20 text-foreground/80 text-xl">
           {hasActiveFilters() 
             ? 'No events found matching your filters.' 
             : 'No upcoming events at this time.'}
@@ -303,11 +303,11 @@ function Dashboard() {
           {events.map(event => (
             <div 
               key={event.id} 
-              className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-all cursor-pointer hover:-translate-y-1"
+              className="bg-white border border-gray-200 rounded-lg p-6 shadow-xs hover:shadow-md transition-all cursor-pointer hover:-translate-y-1"
               onClick={() => handleEventClick(event.id)}
             >
-              <h3 className="text-xl font-bold text-gray-800 mb-3">{event.title}</h3>
-              <div className="space-y-2 text-sm text-gray-600 mb-4">
+              <h3 className="text-xl font-bold mb-3">{event.title}</h3>
+              <div className="space-y-2 text-sm text-foreground/80 mb-4">
                 <p><strong>Date & Time:</strong> {formatDate(event.start_datetime)}</p>
                 <p><strong>Location:</strong> {event.location}</p>
                 <p><strong>Modality:</strong> {event.modality}</p>

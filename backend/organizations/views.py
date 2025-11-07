@@ -1,12 +1,15 @@
 from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from django.contrib.sessions.models import Session
+from accounts.models import OrganizationLeaderProfile
 from .models import Organization, OrganizationMember
+from django.contrib.auth import login
 from .serializers import (
-    OrganizationSerializer, OrganizationRegistrationSerializer,
-    OrganizationMemberSerializer, OrganizationLoginSerializer
+    OrganizationSerializer,
+    OrganizationMemberSerializer
 )
+from accounts.serializers import LoginSerializer, UserSerializer
+from django.contrib.auth.models import User
 
 
 class OrganizationViewSet(viewsets.ReadOnlyModelViewSet):
@@ -19,19 +22,74 @@ class OrganizationViewSet(viewsets.ReadOnlyModelViewSet):
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def register_organization(request):
-    """Register a new organization (public - no authentication required)"""
-    serializer = OrganizationRegistrationSerializer(data=request.data, context={'request': request})
-    
-    if serializer.is_valid():
-        organization = serializer.save()
+    """
+    Allows authenticated users to register an organization.
+    Unauthenticated users must log in first (using username/password).
+    """
+    user = request.user
+
+    # If not authenticated, authenticate manually
+    if not user.is_authenticated:
+        username = request.data.get('user_username')
+        password = request.data.get('user_password')
+
+        if not username or not password:
+            return Response(
+                {'error': 'Username and password required for unauthenticated users.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Reuse your LoginSerializer logic
+        serializer = LoginSerializer(data={'username': username, 'password': password})
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
+            login(request, user)
+        else:
+            user_email = request.data.get('user_email')
+            user_first_name = request.data.get('user_first_name', '')
+            user_last_name = request.data.get('user_last_name', '')
         
-        return Response({
-            'message': 'Organization registered successfully! You can now sign in using the organization credentials.',
-            'organization': OrganizationSerializer(organization).data,
-            'username': organization.username
-        }, status=status.HTTP_201_CREATED)
-    
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            # Create the User
+            user = User.objects.create_user(
+                username=username,
+                email=user_email,
+                password=password,
+                first_name=user_first_name,
+                last_name=user_last_name
+            )
+
+    # At this point, user is authenticated
+    org_name = request.data.get('organization_name')
+    org_description = request.data.get('organization_description')
+    if not org_name:
+        return Response({'error': 'Organization name is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Prevent duplicate organizations or duplicate leaders
+    if hasattr(user, 'org_leader_profile'):
+        return Response({'error': 'User already linked to an organization.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Create organization and profile
+    organization = Organization.objects.create(
+            name=org_name,
+            description=org_description,
+            created_by=user
+    )
+    OrganizationLeaderProfile.objects.create(
+        user=user,
+        organization=organization,
+        is_board_member=True # The creator is automatically a board member
+    )
+
+    return Response({
+        'message': 'Organization registered successfully.',
+        'organization': {
+            'id': organization.id,
+            'name': organization.name,
+        },
+        'user': UserSerializer(user).data,
+        'user_type': 'organization_leader',
+    }, status=status.HTTP_201_CREATED)
+
 
 
 @api_view(['GET'])
@@ -50,72 +108,3 @@ def my_organization_memberships(request):
     memberships = OrganizationMember.objects.filter(user=request.user)
     serializer = OrganizationMemberSerializer(memberships, many=True)
     return Response(serializer.data)
-
-
-@api_view(['POST'])
-@permission_classes([permissions.AllowAny])
-def organization_login(request):
-    """Login using organization credentials"""
-    serializer = OrganizationLoginSerializer(data=request.data)
-    
-    if serializer.is_valid():
-        organization = serializer.validated_data['organization']
-        
-        # Store organization ID in session
-        request.session['organization_id'] = organization.id
-        request.session['organization_name'] = organization.name
-        request.session.save()
-        
-        # Get any user associated with this organization (for compatibility)
-        # Typically the creator or a leader
-        user = None
-        if organization.created_by:
-            user = organization.created_by
-        
-        return Response({
-            'message': 'Login successful',
-            'organization': OrganizationSerializer(organization).data,
-            'user': user.username if user else None,
-            'user_type': 'organization_leader'
-        }, status=status.HTTP_200_OK)
-    
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['POST'])
-@permission_classes([permissions.AllowAny])
-def organization_logout(request):
-    """Logout from organization account"""
-    if 'organization_id' in request.session:
-        del request.session['organization_id']
-    if 'organization_name' in request.session:
-        del request.session['organization_name']
-    request.session.save()
-    return Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
-
-
-@api_view(['GET'])
-@permission_classes([permissions.AllowAny])
-def check_organization_auth(request):
-    """Check if user is logged in as an organization"""
-    organization_id = request.session.get('organization_id')
-    
-    if organization_id:
-        try:
-            organization = Organization.objects.get(id=organization_id)
-            return Response({
-                'is_authenticated': True,
-                'organization': OrganizationSerializer(organization).data,
-                'user_type': 'organization_leader'
-            })
-        except Organization.DoesNotExist:
-            # Clear invalid session
-            if 'organization_id' in request.session:
-                del request.session['organization_id']
-            if 'organization_name' in request.session:
-                del request.session['organization_name']
-            request.session.save()
-    
-    return Response({
-        'is_authenticated': False
-    })

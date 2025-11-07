@@ -181,7 +181,7 @@ function EventDetail() {
       )}
 
       {isSiteAdmin && (
-        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm mb-6">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-xs mb-6">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div className="text-gray-700 font-medium">Admin Controls</div>
             <div className="flex items-center gap-3">
@@ -249,8 +249,8 @@ function EventDetail() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           {/* Event Information */}
-          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Event Information</h2>
+          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-xs">
+            <h2 className="text-2xl font-bold mb-4">Event Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <span className="block text-sm font-medium text-gray-500 mb-1">📅 Date & Time</span>
@@ -295,29 +295,29 @@ function EventDetail() {
 
               <div>
                 <span className="block text-sm font-medium text-gray-500 mb-1">👥 RSVPs</span>
-                <div className="text-gray-800 font-medium">{event.rsvp_count || 0} people RSVPed</div>
+                <div className="font-medium">{event.rsvp_count || 0} people RSVPed</div>
               </div>
             </div>
           </div>
 
           {/* Description */}
-          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Description</h2>
+          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-xs">
+            <h2 className="text-2xl font-bold mb-4">Description</h2>
             <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{event.description}</p>
           </div>
 
           {/* Employers in Attendance */}
           {event.employers_in_attendance && (
-            <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">Employers in Attendance</h2>
+            <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-xs">
+              <h2 className="text-2xl font-bold mb-4">Employers in Attendance</h2>
               <p className="text-gray-700">{event.employers_in_attendance}</p>
             </div>
           )}
 
           {/* Perks & Benefits */}
           {(event.has_free_food || event.has_free_swag || event.other_perks) && (
-            <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">Perks & Benefits</h2>
+            <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-xs">
+              <h2 className="text-2xl font-bold mb-4">Perks & Benefits</h2>
               <div className="space-y-3">
                 {event.has_free_food && (
                   <div className="flex items-center gap-3">
@@ -342,9 +342,9 @@ function EventDetail() {
           )}
 
           {/* RSVP Section */}
-          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">RSVP</h2>
-            <p className="text-gray-600 mb-4">{event.rsvp_count || 0} people have RSVPed to this event</p>
+          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-xs">
+            <h2 className="text-2xl font-bold mb-4">RSVP</h2>
+            <p className="text-foreground/80 mb-4">{event.rsvp_count || 0} people have RSVPed to this event</p>
             
             {rsvpError && (
               <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded mb-4">
@@ -382,8 +382,8 @@ function EventDetail() {
 
         {/* Sidebar */}
         <div className="lg:col-span-1">
-          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm sticky top-8">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">Quick Info</h3>
+          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-xs sticky top-24">
+            <h3 className="text-xl font-bold mb-4">Quick Info</h3>
             <div className="space-y-3 text-sm">
               <div>
                 <strong className="block text-gray-600">Date:</strong>

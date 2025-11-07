@@ -7,8 +7,10 @@ from django.contrib.auth.models import User
 from .models import StudentProfile, OrganizationLeaderProfile
 from .serializers import (
     UserSerializer, StudentProfileSerializer, StudentRegistrationSerializer,
-    LoginSerializer, OrganizationLeaderProfileSerializer
+    LoginSerializer
 )
+from organizations.models import Organization
+from organizations.serializers import OrganizationSerializer
 
 
 class StudentProfileViewSet(viewsets.ReadOnlyModelViewSet):
@@ -44,14 +46,18 @@ def user_login(request):
         
         # Check user type
         user_type = 'student'
+        organization_data = None
         if hasattr(user, 'org_leader_profile'):
             user_type = 'organization_leader'
+            organization = user.org_leader_profile.organization
+            organization_data = OrganizationSerializer(organization).data
         elif hasattr(user, 'site_admin_profile'):
             user_type = 'site_admin'
         
         return Response({
             'message': 'Login successful',
             'user': UserSerializer(user).data,
+            'organization': organization_data,
             'user_type': user_type
         }, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -70,14 +76,17 @@ def user_logout(request):
 def current_user(request):
     """Get current authenticated user"""
     user_type = 'student'
+    organization = None
     if hasattr(request.user, 'org_leader_profile'):
         user_type = 'organization_leader'
+        organization = request.user.org_leader_profile.organization
     elif hasattr(request.user, 'site_admin_profile'):
         user_type = 'site_admin'
     
     return Response({
         'user': UserSerializer(request.user).data,
         'user_type': user_type,
+        'organization': organization,
         'is_authenticated': True
     })
 
@@ -88,15 +97,18 @@ def check_auth(request):
     """Check if user is authenticated"""
     if request.user.is_authenticated:
         user_type = 'student'
+        organization = None
         if hasattr(request.user, 'org_leader_profile'):
             user_type = 'organization_leader'
+            organization = request.user.org_leader_profile.organization
         elif hasattr(request.user, 'site_admin_profile'):
             user_type = 'site_admin'
         
         return Response({
             'is_authenticated': True,
             'user': UserSerializer(request.user).data,
-            'user_type': user_type
+            'user_type': user_type,
+            'organization': organization
         })
     return Response({
         'is_authenticated': False

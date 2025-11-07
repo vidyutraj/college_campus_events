@@ -69,8 +69,8 @@ Once verified, organizations will appear in the public API endpoints and can be 
 - `/events` - Event listing/dashboard with filters
 - `/events/:id` - Event detail page with RSVP functionality
 - `/login` - Login page (students and organization leaders)
-- `/register/student` - Student registration
-- `/register/organization` - Organization registration
+- `/register` - Student registration
+- `/create-organization` - Organization registration
 - `/leader/dashboard` - Organization leader dashboard (future)
 
 ## Authentication Flow
@@ -282,7 +282,7 @@ frontend/src/
 - `GET /api/events/categories/` - List event categories
 
 ### Authentication
-- `POST /api/auth/register/student/` - Student registration
+- `POST /api/auth/register/` - Student registration
 - `POST /api/auth/login/` - User login (students or leaders)
 - `POST /api/auth/logout/` - User logout (requires authentication)
 - `GET /api/auth/check/` - Check if user is authenticated
@@ -385,22 +385,25 @@ frontend/src/
 
 ```
 college_campus_events/
-├── accounts/          # User accounts and profiles
-├── events/            # Event models, views, serializers
-├── organizations/     # Organization models and management
-├── campus_events/     # Django project settings
-├── frontend/          # React + TypeScript + Vite frontend
-│   ├── src/
-│   │   ├── components/    # React components
-│   │   ├── context/       # React context (auth)
-│   │   ├── types/         # TypeScript types
-│   │   ├── utils/         # Utilities (axios config)
-│   │   ├── App.tsx        # Main app component
-│   │   └── main.tsx       # Entry point
-│   ├── package.json
-│   ├── vite.config.ts
-│   └── tailwind.config.js
-└── manage.py         # Django management script
+├── backend/               # Django backend
+│   ├── accounts/          # User accounts and profiles
+│   ├── events/            # Event models, views, serializers
+│   ├── organizations/     # Organization models and management
+│   ├── campus_events/     # Django project settings (settings.py, urls.py, wsgi.py, etc.)
+│   └── manage.py          # Django management script
+│
+└── frontend/              # React + TypeScript + Vite frontend
+    ├── src/
+    │   ├── components/    # React components
+    │   ├── context/       # React context (auth)
+    │   ├── types/         # TypeScript types
+    │   ├── utils/         # Utilities (axios config)
+    │   ├── App.tsx        # Main app component
+    │   └── main.tsx       # Entry point
+    ├── package.json
+    ├── vite.config.ts
+    └── tailwind.config.js
+
 ```
 
 ## Useful Commands (macOS/Linux)

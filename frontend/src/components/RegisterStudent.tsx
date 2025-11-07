@@ -47,7 +47,7 @@ function RegisterStudent() {
     }
 
     try {
-      const response = await axiosInstance.post(`${API_BASE_URL}/register/student/`, formData);
+      const response = await axiosInstance.post(`${API_BASE_URL}/register/`, formData);
       authLogin(response.data.user, 'student');
       navigate('/events');
     } catch (err: any) {
@@ -73,8 +73,8 @@ function RegisterStudent() {
   return (
     <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-5 py-12 bg-gray-50">
       <div className="bg-white border border-gray-200 rounded-lg shadow-md p-8 w-full max-w-2xl">
-        <h2 className="text-3xl font-bold text-gray-800 mb-2">Create Student Account</h2>
-        <p className="text-gray-600 mb-6">Sign up to browse and RSVP to campus events</p>
+        <h2 className="text-3xl font-bold mb-2">Create Student Account</h2>
+        <p className="text-foreground/80 mb-6">Sign up to browse and RSVP to campus events</p>
         
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded mb-4">
@@ -96,7 +96,7 @@ function RegisterStudent() {
                 onChange={handleChange}
                 required
                 autoComplete="username"
-                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
               />
             </div>
             
@@ -112,7 +112,7 @@ function RegisterStudent() {
                 onChange={handleChange}
                 required
                 autoComplete="email"
-                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
@@ -129,7 +129,7 @@ function RegisterStudent() {
                 value={formData.first_name}
                 onChange={handleChange}
                 autoComplete="given-name"
-                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
               />
             </div>
             
@@ -144,7 +144,7 @@ function RegisterStudent() {
                 value={formData.last_name}
                 onChange={handleChange}
                 autoComplete="family-name"
-                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
@@ -163,7 +163,7 @@ function RegisterStudent() {
                 required
                 minLength={8}
                 autoComplete="new-password"
-                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
               />
               <small className="text-gray-500 text-xs mt-1 block">Must be at least 8 characters</small>
             </div>
@@ -181,7 +181,7 @@ function RegisterStudent() {
                 required
                 minLength={8}
                 autoComplete="new-password"
-                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
@@ -197,7 +197,7 @@ function RegisterStudent() {
               value={formData.name}
               onChange={handleChange}
               placeholder="Optional: How you'd like to be displayed"
-              className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
             />
           </div>
 
@@ -212,14 +212,14 @@ function RegisterStudent() {
               onChange={handleChange}
               rows={3}
               placeholder="Optional: Tell us about yourself"
-              className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
             />
           </div>
           
           <button 
             type="submit" 
             disabled={loading} 
-            className="w-full bg-primary text-white py-3 rounded font-medium hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="cursor-pointer w-full bg-secondary text-white py-3 rounded-full font-medium hover:bg-secondary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Creating Account...' : 'Create Account'}
           </button>
@@ -228,9 +228,6 @@ function RegisterStudent() {
         <div className="mt-6 text-center space-y-2 text-sm">
           <p className="text-gray-600">
             Already have an account? <Link to="/login" className="text-primary hover:text-primary-dark font-medium">Sign in</Link>
-          </p>
-          <p className="text-gray-600">
-            <Link to="/" className="text-primary hover:text-primary-dark font-medium">Back to Home</Link>
           </p>
         </div>
       </div>

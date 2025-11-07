@@ -50,7 +50,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({ label = 'Loca
           type="text"
           defaultValue={value.location ? `${value.location} - ${value.address}` : ''}
           placeholder="Start typing a location..."
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2 focus:ring-indigo-500 focus:border-indigo-500"
           required
         />
       </StandaloneSearchBox>
