@@ -33,8 +33,9 @@ class Event(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     location = models.CharField(max_length=200)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    room = models.CharField(max_length=100, blank=True, null=True)
+    latitude = models.DecimalField(max_digits=18, decimal_places=14, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=18, decimal_places=14, null=True, blank=True)
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField()
     modality = models.CharField(max_length=20, choices=MODALITY_CHOICES, default='in-person')
@@ -50,7 +51,7 @@ class Event(models.Model):
     
     # Hosting
     host_organization = models.ForeignKey('organizations.Organization', on_delete=models.SET_NULL, null=True, blank=True, related_name='events')
-    host_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='hosted_events')
+    host_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='hosted_events')
     
     # Employers/Companies
     employers_in_attendance = models.TextField(blank=True, help_text="List of employers/companies attending")

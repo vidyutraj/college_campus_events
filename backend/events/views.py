@@ -1,9 +1,11 @@
-from rest_framework import viewsets, filters, status
+from rest_framework import viewsets, filters, status, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils import timezone
+
+from organizations.models import Organization
 from .models import Event, EventCategory, RSVP
 from .serializers import EventSerializer, EventCategorySerializer, RSVPSerializer
 
@@ -16,9 +18,14 @@ class EventCategoryViewSet(viewsets.ReadOnlyModelViewSet):
 
 class EventViewSet(viewsets.ModelViewSet):
     """ViewSet for events"""
-    queryset = Event.objects.filter(status='published', is_approved=True)
+    queryset = Event.objects.all()
     serializer_class = EventSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [permissions.AllowAny()]
+        return super().get_permissions()
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['category', 'modality', 'has_free_food', 'has_free_swag', 'host_organization']
     search_fields = ['title', 'description', 'location']
@@ -26,6 +33,11 @@ class EventViewSet(viewsets.ModelViewSet):
     ordering = ['-start_datetime']
 
     def get_queryset(self):
+        # For detail view (retrieve), allow fetching any event regardless of status
+        if self.action == 'retrieve' or (self.action == 'pending_approval' and self.request.user.is_staff):
+            return Event.objects.all()
+        
+        # For list view, apply filters for published and approved events
         queryset = Event.objects.filter(status='published', is_approved=True)
         
         # Filter by date range if provided
@@ -43,8 +55,33 @@ class EventViewSet(viewsets.ModelViewSet):
         
         return queryset
 
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAdminUser])
+    def pending_approval(self, request):
+        """
+        List all pending events for admin approval.
+        """
+        queryset = self.filter_queryset(self.get_queryset()).filter(is_approved=False)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
     def perform_create(self, serializer):
-        serializer.save(host_user=self.request.user)
+        host_user = None
+        if self.request.user.is_authenticated:
+            host_user = self.request.user
+        
+        # Get host_organization from validated data if present
+        host_organization_id = self.request.data.get('host_organization')
+        if host_organization_id:
+            # If host_organization_id is provided, fetch the Organization instance
+            try:
+                organization_instance = Organization.objects.get(id=host_organization_id)
+                serializer.save(host_user=host_user, host_organization=organization_instance)
+            except Organization.DoesNotExist:
+                # Handle case where organization ID is invalid
+                raise serializer.ValidationError({"host_organization": "Organization with this ID does not exist."})
+        else:
+            # Otherwise, save without host_organization, relying on other defaults/logic
+            serializer.save(host_user=host_user)
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def rsvp(self, request, pk=None):

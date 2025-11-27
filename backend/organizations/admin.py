@@ -4,21 +4,17 @@ from .models import Organization, OrganizationMember
 
 @admin.register(Organization)
 class OrganizationAdmin(admin.ModelAdmin):
-    list_display = ['name', 'username', 'created_by', 'is_verified', 'created_at']
+    list_display = ['name', 'created_by', 'is_verified', 'created_at']
     list_filter = ['is_verified', 'created_at']
-    search_fields = ['name', 'description', 'username']
-    readonly_fields = ['password_hash', 'created_at', 'updated_at']
+    search_fields = ['name', 'description']
+    readonly_fields = ['created_at', 'updated_at']
     list_editable = ['is_verified']  # Allow quick editing from list view
     fieldsets = (
         ('Organization Information', {
-            'fields': ('name', 'description', 'username')
+            'fields': ('name', 'description', 'created_by')
         }),
         ('Verification Status', {
-            'fields': ('is_verified', 'created_by', 'created_at', 'updated_at')
-        }),
-        ('Security', {
-            'fields': ('password_hash',),
-            'classes': ('collapse',)
+            'fields': ('is_verified', 'created_at', 'updated_at')
         }),
     )
     

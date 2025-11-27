@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import Organization, OrganizationMember
-from accounts.models import OrganizationLeaderProfile
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -9,82 +8,81 @@ class OrganizationSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Organization
-        fields = ['id', 'name', 'description', 'created_by', 'is_verified', 'created_at', 'updated_at', 'members_count', 'username']
+        fields = ['id', 'name', 'description', 'created_by', 'is_verified', 'created_at', 'updated_at', 'members_count']
         read_only_fields = ['is_verified', 'created_at', 'updated_at', 'created_by']
     
     def get_members_count(self, obj):
         return obj.members.count()
 
 
+from django.contrib.auth.models import User
+
 class OrganizationRegistrationSerializer(serializers.ModelSerializer):
-    """Serializer for registering a new organization"""
+    """Serializer for registering a new organization and its creating user"""
     description = serializers.CharField(required=False, allow_blank=True)
-    username = serializers.CharField(required=True, min_length=3, max_length=150, help_text="Organization login username")
-    password = serializers.CharField(write_only=True, required=True, min_length=8, help_text="Organization login password")
-    password_confirm = serializers.CharField(write_only=True, required=True, min_length=8, help_text="Confirm organization password")
+    
+    # User fields for the organization creator
+    user_username = serializers.CharField(write_only=True, required=True, min_length=3, max_length=150)
+    user_email = serializers.EmailField(write_only=True, required=True)
+    user_password = serializers.CharField(write_only=True, required=True, min_length=8)
+    user_password_confirm = serializers.CharField(write_only=True, required=True, min_length=8)
+    user_first_name = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    user_last_name = serializers.CharField(write_only=True, required=False, allow_blank=True)
     
     class Meta:
         model = Organization
-        fields = ['name', 'description', 'username', 'password', 'password_confirm']
+        fields = [
+            'name', 'description',
+            'user_username', 'user_email', 'user_password', 'user_password_confirm',
+            'user_first_name', 'user_last_name'
+        ]
     
     def validate(self, attrs):
-        if attrs['password'] != attrs['password_confirm']:
-            raise serializers.ValidationError({"password_confirm": "Passwords do not match."})
+        if attrs['user_password'] != attrs['user_password_confirm']:
+            raise serializers.ValidationError({"user_password_confirm": "Passwords do not match."})
         
-        # Check if username is already taken
-        if Organization.objects.filter(username=attrs['username']).exists():
-            raise serializers.ValidationError({"username": "This username is already taken."})
+        if User.objects.filter(username=attrs['user_username']).exists():
+            raise serializers.ValidationError({"user_username": "This username is already taken."})
         
+        if User.objects.filter(email=attrs['user_email']).exists():
+            raise serializers.ValidationError({"user_email": "This email is already registered."})
+            
         return attrs
     
     def create(self, validated_data):
-        # Extract password fields
-        password = validated_data.pop('password')
-        password_confirm = validated_data.pop('password_confirm')
-        username = validated_data.pop('username')
+        # Extract user fields
+        user_username = validated_data.pop('user_username')
+        user_email = validated_data.pop('user_email')
+        user_password = validated_data.pop('user_password')
+        user_password_confirm = validated_data.pop('user_password_confirm') # Not needed after validation
+        user_first_name = validated_data.pop('user_first_name', '')
+        user_last_name = validated_data.pop('user_last_name', '')
         
-        # Create the organization (no user needed - organizations are independent)
+        # Create the User
+        user = User.objects.create_user(
+            username=user_username,
+            email=user_email,
+            password=user_password,
+            first_name=user_first_name,
+            last_name=user_last_name
+        )
+        
+        # Create the Organization, linking it to the newly created user
         organization = Organization.objects.create(
             name=validated_data['name'],
             description=validated_data.get('description', ''),
-            username=username
+            created_by=user # Link the organization to the user who created it
+        )
+
+        OrganizationMember.objects.create(
+            user=user,
+            organization=organization,
+            is_board_member=True,
+            is_leader=True,
+            role="President"
         )
         
-        # Set organization password
-        organization.set_password(password)
-        
-        # Note: created_by is optional now, but we can set it if user is authenticated
-        request = self.context.get('request')
-        if request and request.user.is_authenticated:
-            organization.created_by = request.user
-            organization.save()
-        
         return organization
-
-
-class OrganizationLoginSerializer(serializers.Serializer):
-    """Serializer for organization login"""
-    username = serializers.CharField()
-    password = serializers.CharField(write_only=True)
-    
-    def validate(self, attrs):
-        username = attrs.get('username')
-        password = attrs.get('password')
-        
-        if username and password:
-            try:
-                organization = Organization.objects.get(username=username)
-                if not organization.check_password(password):
-                    raise serializers.ValidationError('Invalid credentials.')
-                if not organization.is_verified:
-                    raise serializers.ValidationError('Organization is not yet verified. Please wait for admin approval.')
-                attrs['organization'] = organization
-            except Organization.DoesNotExist:
-                raise serializers.ValidationError('Invalid credentials.')
-        else:
-            raise serializers.ValidationError('Must include "username" and "password".')
-        
-        return attrs
 
 
 class OrganizationMemberSerializer(serializers.ModelSerializer):

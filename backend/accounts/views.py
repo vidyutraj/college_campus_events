@@ -4,11 +4,13 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
-from .models import StudentProfile, OrganizationLeaderProfile
+from .models import StudentProfile
 from .serializers import (
     UserSerializer, StudentProfileSerializer, StudentRegistrationSerializer,
-    LoginSerializer, OrganizationLeaderProfileSerializer
+    LoginSerializer
 )
+from organizations.models import Organization
+from organizations.serializers import OrganizationSerializer
 
 
 class StudentProfileViewSet(viewsets.ReadOnlyModelViewSet):
@@ -43,16 +45,17 @@ def user_login(request):
         login(request, user)
         
         # Check user type
-        user_type = 'student'
-        if hasattr(user, 'org_leader_profile'):
-            user_type = 'organization_leader'
-        elif hasattr(user, 'site_admin_profile'):
-            user_type = 'site_admin'
+        organization_data = []
+        if hasattr(user, 'organization_memberships'):
+            leader_memberships = user.organization_memberships.filter(is_leader=True)
+            if leader_memberships.exists():
+                for membership in leader_memberships:
+                    organization_data.append(OrganizationSerializer(membership.organization).data)
         
         return Response({
             'message': 'Login successful',
             'user': UserSerializer(user).data,
-            'user_type': user_type
+            'organizations': organization_data
         }, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -69,15 +72,16 @@ def user_logout(request):
 @permission_classes([permissions.IsAuthenticated])
 def current_user(request):
     """Get current authenticated user"""
-    user_type = 'student'
-    if hasattr(request.user, 'org_leader_profile'):
-        user_type = 'organization_leader'
-    elif hasattr(request.user, 'site_admin_profile'):
-        user_type = 'site_admin'
+    organization_data = []
+    if hasattr(request.user, 'organization_memberships'):
+        leader_memberships = request.user.organization_memberships.filter(is_leader=True)
+        if leader_memberships.exists():
+            for membership in leader_memberships:
+                organization_data.append(OrganizationSerializer(membership.organization).data)
     
     return Response({
         'user': UserSerializer(request.user).data,
-        'user_type': user_type,
+        'organizations': organization_data, # Changed to 'organizations'
         'is_authenticated': True
     })
 
@@ -87,16 +91,17 @@ def current_user(request):
 def check_auth(request):
     """Check if user is authenticated"""
     if request.user.is_authenticated:
-        user_type = 'student'
-        if hasattr(request.user, 'org_leader_profile'):
-            user_type = 'organization_leader'
-        elif hasattr(request.user, 'site_admin_profile'):
-            user_type = 'site_admin'
+        organization_data = []
+        if hasattr(request.user, 'organization_memberships'):
+            leader_memberships = request.user.organization_memberships.filter(is_leader=True)
+            if leader_memberships.exists():
+                for membership in leader_memberships:
+                    organization_data.append(OrganizationSerializer(membership.organization).data)
         
         return Response({
             'is_authenticated': True,
             'user': UserSerializer(request.user).data,
-            'user_type': user_type
+            'organizations': organization_data # Changed to 'organizations'
         })
     return Response({
         'is_authenticated': False
