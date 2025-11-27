@@ -4,6 +4,7 @@ import {
     LuBuilding,
     LuCalendar,
     LuCalendarClock,
+    LuCalendarRange,
     LuMap,
     LuPlus,
 } from "react-icons/lu";
@@ -17,8 +18,6 @@ interface SidebarProps {
 export default function Sidebar({ sbCollapsed }: SidebarProps) {
     const location = useLocation();
     const { user, isAuthenticated, organizations } = useAuth();
-
-    console.log(organizations);
 
     const campusNavItems = [
         { name: "Events", href: "/events", icon: LuCalendar },
@@ -39,6 +38,11 @@ export default function Sidebar({ sbCollapsed }: SidebarProps) {
             name: "Event Requests",
             href: "/admin/event-requests",
             icon: LuBadgeCheck,
+        },
+        {
+            name: "Event Administration",
+            href: "/admin/events",
+            icon: LuCalendarRange,
         },
     ];
 
