@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axiosInstance from "../utils/axiosConfig";
 import type { Event, Category, Organization } from "../types";
 
@@ -11,10 +11,13 @@ interface Filters {
     hasFreeSwag: boolean;
     startDate: string;
     endDate: string;
+    search: string;
 }
 
 export default function Events() {
     const navigate = useNavigate();
+    const location = useLocation();
+
     const [events, setEvents] = useState<Event[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -26,10 +29,26 @@ export default function Events() {
         hasFreeSwag: false,
         startDate: "",
         endDate: "",
+        search: "",
     });
     const [showFilters, setShowFilters] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    // Initialize filters from URL query params
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search);
+        setFilters({
+            category: searchParams.get("category") || "",
+            organization: searchParams.get("organization") || "",
+            modality: searchParams.get("modality") || "",
+            hasFreeFood: searchParams.get("has_free_food") === "true",
+            hasFreeSwag: searchParams.get("has_free_swag") === "true",
+            startDate: searchParams.get("start_date") || "",
+            endDate: searchParams.get("end_date") || "",
+            search: searchParams.get("search") || "",
+        });
+    }, [location.search]);
 
     const handleEventClick = (eventId: number) => {
         navigate(`/events/${eventId}`);
@@ -38,12 +57,11 @@ export default function Events() {
     useEffect(() => {
         fetchCategories();
         fetchOrganizations();
-        fetchEvents();
     }, []);
 
     useEffect(() => {
-        fetchEvents();
-    }, [filters]);
+        fetchEventsFromURL();
+    }, [location.search]);
 
     const fetchCategories = async () => {
         try {
@@ -63,35 +81,18 @@ export default function Events() {
         }
     };
 
-    const fetchEvents = async () => {
+    const fetchEventsFromURL = async () => {
         try {
             setLoading(true);
-            const params: Record<string, string> = {};
+            const searchParams = new URLSearchParams(location.search);
+            const params: Record<string, string> = {
+                is_approved: "true",
+                status: "published",
+            };
 
-            params.is_approved = "true";
-            params.status = "published";
-
-            if (filters.category) {
-                params.category = filters.category;
-            }
-            if (filters.organization) {
-                params.host_organization = filters.organization;
-            }
-            if (filters.modality) {
-                params.modality = filters.modality;
-            }
-            if (filters.hasFreeFood) {
-                params.has_free_food = "true";
-            }
-            if (filters.hasFreeSwag) {
-                params.has_free_swag = "true";
-            }
-            if (filters.startDate) {
-                params.start_date = filters.startDate;
-            }
-            if (filters.endDate) {
-                params.end_date = filters.endDate;
-            }
+            searchParams.forEach((value, key) => {
+                params[key] = value;
+            });
 
             const response = await axiosInstance.get("/api/events/", {
                 params,
@@ -100,7 +101,7 @@ export default function Events() {
             setError(null);
         } catch (err) {
             setError("Failed to load events. Please try again later.");
-            console.error("Error fetching events:", err);
+            console.error(err);
         } finally {
             setLoading(false);
         }
@@ -110,22 +111,27 @@ export default function Events() {
         filterName: keyof Filters,
         value: string | boolean
     ) => {
-        setFilters((prev) => ({
-            ...prev,
-            [filterName]: value,
-        }));
+        const newFilters = { ...filters, [filterName]: value };
+        setFilters(newFilters);
+
+        const params = new URLSearchParams();
+
+        if (newFilters.category) params.set("category", newFilters.category);
+        if (newFilters.organization)
+            params.set("organization", newFilters.organization);
+        if (newFilters.modality) params.set("modality", newFilters.modality);
+        if (newFilters.hasFreeFood) params.set("has_free_food", "true");
+        if (newFilters.hasFreeSwag) params.set("has_free_swag", "true");
+        if (newFilters.startDate)
+            params.set("start_date", newFilters.startDate);
+        if (newFilters.endDate) params.set("end_date", newFilters.endDate);
+        if (newFilters.search) params.set("end_date", newFilters.search);
+
+        navigate({ search: params.toString() }, { replace: true });
     };
 
     const clearFilters = () => {
-        setFilters({
-            category: "",
-            organization: "",
-            modality: "",
-            hasFreeFood: false,
-            hasFreeSwag: false,
-            startDate: "",
-            endDate: "",
-        });
+        navigate({ search: "" }, { replace: true });
     };
 
     const hasActiveFilters = () => {
@@ -136,7 +142,8 @@ export default function Events() {
             filters.hasFreeFood ||
             filters.hasFreeSwag ||
             filters.startDate ||
-            filters.endDate
+            filters.endDate ||
+            filters.search
         );
     };
 
@@ -384,8 +391,8 @@ export default function Events() {
                     {events
                         .filter(
                             (event) =>
-                                event.is_approved == true &&
-                                event.status == "published"
+                                event.is_approved === true &&
+                                event.status === "published"
                         )
                         .map((event) => (
                             <div
