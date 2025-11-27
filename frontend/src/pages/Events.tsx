@@ -176,7 +176,7 @@ export default function Events() {
                 </h2>
                 <button
                     onClick={() => setShowFilters(!showFilters)}
-                    className="cursor-pointer bg-primary text-white px-6 py-2 rounded-full hover:bg-primary-dark transition-colors relative"
+                    className="btn-primary px-6 py-2 rounded-full relative"
                 >
                     {showFilters ? "Hide Filters" : "Show Filters"}
                     {hasActiveFilters() && (

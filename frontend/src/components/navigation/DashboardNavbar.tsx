@@ -61,10 +61,8 @@ export default function DashboardNavbar({
                         <>
                             <Link
                                 to="/register"
-                                className="transition-all font-medium rounded-full
-                                           text-white border border-secondary bg-secondary
-                                           hover:bg-secondary-dark hover:border-secondary-dark
-                                           px-4 py-1"
+                                className="font-medium rounded-full px-4 py-1
+                                           btn-secondary border border-secondary hover:border-secondary-dark"
                             >
                                 Sign Up
                             </Link>

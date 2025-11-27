@@ -86,7 +86,7 @@ export default function LoginForm() {
                         required
                         autoComplete="username"
                         placeholder="Enter your username"
-                        className="bg-white w-full border border-gray-300 rounded-lg px-5 py-3 focus:outline-hidden focus:border-secondary focus:ring-3 focus:ring-secondary/20"
+                        className="input-gray w-full rounded-lg px-5 py-3 input-focus-secondary"
                     />
                 </div>
 
@@ -106,14 +106,14 @@ export default function LoginForm() {
                         required
                         autoComplete="current-password"
                         placeholder="Enter your password"
-                        className="bg-white w-full border border-gray-300 rounded-lg px-5 py-3 focus:outline-hidden focus:border-secondary focus:ring-3 focus:ring-secondary/20"
+                        className="input-gray w-full border rounded-lg px-5 py-3 input-focus-secondary"
                     />
                 </div>
 
                 <button
                     type="submit"
                     disabled={loading}
-                    className="mt-3 cursor-pointer w-full bg-secondary text-white py-3 rounded-full font-medium      hover:bg-secondary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="mt-3 w-full btn-secondary py-3 rounded-full font-medium"
                 >
                     {loading ? "Signing in..." : "Sign In"}
                 </button>

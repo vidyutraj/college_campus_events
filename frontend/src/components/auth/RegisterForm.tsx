@@ -86,6 +86,9 @@ export default function RegisterForm() {
         }
     };
 
+    const inputStyle = "w-full input-gray rounded-lg px-4 py-2 input-focus-primary";
+    const labelStyle = "block text-sm font-medium text-gray-700 mb-2"
+
     return (
         <div className="max-w-lg w-full">
             <h2 className="text-3xl font-bold mb-2">Create Student Account</h2>
@@ -104,7 +107,7 @@ export default function RegisterForm() {
                     <div>
                         <label
                             htmlFor="username"
-                            className="block text-sm font-medium text-gray-700 mb-2"
+                            className={labelStyle}
                         >
                             Username *
                         </label>
@@ -116,14 +119,14 @@ export default function RegisterForm() {
                             onChange={handleChange}
                             required
                             autoComplete="username"
-                            className="bg-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
+                            className={inputStyle}
                         />
                     </div>
 
                     <div>
                         <label
                             htmlFor="email"
-                            className="block text-sm font-medium text-gray-700 mb-2"
+                            className={labelStyle}
                         >
                             Email *
                         </label>
@@ -135,7 +138,7 @@ export default function RegisterForm() {
                             onChange={handleChange}
                             required
                             autoComplete="email"
-                            className="bg-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
+                            className={inputStyle}
                         />
                     </div>
                 </div>
@@ -144,7 +147,7 @@ export default function RegisterForm() {
                     <div>
                         <label
                             htmlFor="first_name"
-                            className="block text-sm font-medium text-gray-700 mb-2"
+                            className={labelStyle}
                         >
                             First Name *
                         </label>
@@ -156,14 +159,14 @@ export default function RegisterForm() {
                             onChange={handleChange}
                             autoComplete="given-name"
                             required
-                            className="bg-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
+                            className={inputStyle}
                         />
                     </div>
 
                     <div>
                         <label
                             htmlFor="last_name"
-                            className="block text-sm font-medium text-gray-700 mb-2"
+                            className={labelStyle}
                         >
                             Last Name *
                         </label>
@@ -175,7 +178,7 @@ export default function RegisterForm() {
                             onChange={handleChange}
                             autoComplete="family-name"
                             required
-                            className="bg-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
+                            className={inputStyle}
                         />
                     </div>
                 </div>
@@ -184,7 +187,7 @@ export default function RegisterForm() {
                     <div>
                         <label
                             htmlFor="password"
-                            className="block text-sm font-medium text-gray-700 mb-2"
+                            className={labelStyle}
                         >
                             Password *
                         </label>
@@ -197,7 +200,7 @@ export default function RegisterForm() {
                             required
                             minLength={8}
                             autoComplete="new-password"
-                            className="bg-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
+                            className={inputStyle}
                         />
                         <small className="text-gray-500 text-xs mt-1 block">
                             Must be at least 8 characters
@@ -207,7 +210,7 @@ export default function RegisterForm() {
                     <div>
                         <label
                             htmlFor="password_confirm"
-                            className="block text-sm font-medium text-gray-700 mb-2"
+                            className={labelStyle}
                         >
                             Confirm Password *
                         </label>
@@ -220,15 +223,15 @@ export default function RegisterForm() {
                             required
                             minLength={8}
                             autoComplete="new-password"
-                            className="bg-white w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
+                            className={inputStyle}
                         />
                     </div>
                 </div>
 
                 <button
                     type="submit"
-                    disabled={loading}
-                    className="mt-2 cursor-pointer w-full bg-secondary text-white py-3 rounded-full font-medium hover:bg-secondary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={true}
+                    className="mt-2 w-full btn-secondary py-3 rounded-full font-medium"
                 >
                     {loading ? "Creating Account..." : "Create Account"}
                 </button>

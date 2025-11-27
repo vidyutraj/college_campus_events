@@ -377,7 +377,7 @@ export default function AdminEvents() {
                 <button
                     type="button"
                     onClick={resetForm}
-                    className="bg-primary text-white px-5 py-2 rounded hover:bg-primary-dark transition-colors"
+                    className="btn-primary px-5 py-2 rounded"
                 >
                     Add New Event
                 </button>
@@ -537,7 +537,7 @@ export default function AdminEvents() {
                                 onChange={(e) =>
                                     handleChange("title", e.target.value)
                                 }
-                                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                className="w-full input-gray rounded px-3 py-2 input-focus-primary"
                                 required
                             />
                         </div>
@@ -555,7 +555,7 @@ export default function AdminEvents() {
                                 onChange={(e) =>
                                     handleChange("description", e.target.value)
                                 }
-                                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                className="w-full input-gray rounded px-3 py-2 input-focus-primary"
                                 rows={4}
                                 required
                             ></textarea>
@@ -579,7 +579,7 @@ export default function AdminEvents() {
                                             e.target.value
                                         )
                                     }
-                                    className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                    className="w-full input-gray rounded px-3 py-2 input-focus-primary"
                                     required
                                 />
                             </div>
@@ -600,7 +600,7 @@ export default function AdminEvents() {
                                             e.target.value
                                         )
                                     }
-                                    className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                    className="w-full input-gray rounded px-3 py-2 input-focus-primary"
                                 />
                             </div>
                         </div>
@@ -620,7 +620,7 @@ export default function AdminEvents() {
                                     onChange={(e) =>
                                         handleChange("location", e.target.value)
                                     }
-                                    className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                    className="w-full input-gray rounded px-3 py-2 input-focus-primary"
                                     required
                                 />
                             </div>
@@ -637,7 +637,7 @@ export default function AdminEvents() {
                                     onChange={(e) =>
                                         handleChange("modality", e.target.value)
                                     }
-                                    className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                    className="w-full input-gray rounded px-3 py-2 input-focus-primary"
                                 >
                                     {MODALITY_OPTIONS.map((option) => (
                                         <option
@@ -668,7 +668,7 @@ export default function AdminEvents() {
                                             e.target.value
                                         )
                                     }
-                                    className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                    className="w-full input-gray rounded px-3 py-2 input-focus-primary"
                                 >
                                     <option value="">Uncategorized</option>
                                     {categories.map((category) => (
@@ -698,7 +698,7 @@ export default function AdminEvents() {
                                             e.target.value
                                         )
                                     }
-                                    className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                    className="w-full input-gray rounded px-3 py-2 input-focus-primary"
                                 >
                                     <option value="">Unassigned</option>
                                     {organizations.map((org) => (
@@ -724,7 +724,7 @@ export default function AdminEvents() {
                                 onChange={(e) =>
                                     handleChange("subcategory", e.target.value)
                                 }
-                                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                className="w-full input-gray rounded px-3 py-2 input-focus-primary"
                             />
                         </div>
 
@@ -743,7 +743,7 @@ export default function AdminEvents() {
                                     onChange={(e) =>
                                         handleChange("latitude", e.target.value)
                                     }
-                                    className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                    className="w-full input-gray rounded px-3 py-2 input-focus-primary"
                                     placeholder="Optional"
                                 />
                             </div>
@@ -764,7 +764,7 @@ export default function AdminEvents() {
                                             e.target.value
                                         )
                                     }
-                                    className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                    className="w-full input-gray rounded px-3 py-2 input-focus-primary"
                                     placeholder="Optional"
                                 />
                             </div>
@@ -786,7 +786,7 @@ export default function AdminEvents() {
                                         e.target.value
                                     )
                                 }
-                                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                className="w-full input-gray rounded px-3 py-2 input-focus-primary"
                                 rows={2}
                                 placeholder="Optional"
                             ></textarea>
@@ -805,7 +805,7 @@ export default function AdminEvents() {
                                 onChange={(e) =>
                                     handleChange("otherPerks", e.target.value)
                                 }
-                                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                className="w-full input-gray rounded px-3 py-2 input-focus-primary"
                                 rows={2}
                                 placeholder="Optional"
                             ></textarea>
@@ -856,7 +856,7 @@ export default function AdminEvents() {
                                     onChange={(e) =>
                                         handleChange("status", e.target.value)
                                     }
-                                    className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                                    className="w-full input-gray rounded px-3 py-2 input-focus-primary"
                                 >
                                     {STATUS_OPTIONS.map((option) => (
                                         <option
@@ -891,7 +891,7 @@ export default function AdminEvents() {
                                 <button
                                     type="button"
                                     onClick={resetForm}
-                                    className="px-4 py-2 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors"
+                                    className="px-4 py-2 rounded input-gray text-gray-700 hover:bg-gray-100 transition-colors"
                                 >
                                     Cancel Edit
                                 </button>
@@ -899,7 +899,7 @@ export default function AdminEvents() {
                             <button
                                 type="submit"
                                 disabled={saving}
-                                className="px-5 py-2 rounded bg-primary text-white font-medium hover:bg-primary-dark transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                                className="px-5 py-2 rounded btn-primary font-medium"
                             >
                                 {saving
                                     ? "Saving…"

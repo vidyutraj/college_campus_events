@@ -226,7 +226,7 @@ export default function EventDetail() {
                                     <button
                                         onClick={handleSave}
                                         disabled={saving}
-                                        className="px-4 py-2 rounded bg-primary text-white hover:bg-primary-dark disabled:opacity-50"
+                                        className="px-4 py-2 rounded btn-primary"
                                     >
                                         {saving ? "Saving..." : "Save"}
                                     </button>
@@ -572,7 +572,7 @@ export default function EventDetail() {
                                 <button
                                     onClick={handleRSVP}
                                     disabled={rsvpLoading}
-                                    className="bg-primary text-white px-6 py-2 rounded hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="btn-primary px-6 py-2 rounded"
                                 >
                                     {rsvpLoading
                                         ? "RSVPing..."

@@ -79,7 +79,7 @@ export default function Home() {
                                 }`}
                                 className="-ml-12"
                             >
-                                <div className=" w-10 h-10 bg-secondary text-background text-2xl flex items-center justify-center rounded-full">
+                                <div className="w-10 h-10 btn-secondary text-2xl flex items-center justify-center rounded-full">
                                     <LuArrowRight />
                                 </div>
                             </Link>
@@ -133,7 +133,7 @@ export default function Home() {
                 <div className="flex gap-5 justify-center flex-wrap">
                     <Link
                         to="/register"
-                        className="bg-tertiary px-10 py-2 border-2 border-tertiary hover:border-tertiary-dark rounded-full text-lg font-medium transition-all duration-300 hover:bg-tertiary-dark"
+                        className="btn-tertiary px-10 py-2 border-2 border-tertiary hover:border-tertiary-dark rounded-full text-lg font-medium"
                     >
                         Create Student Account
                     </Link>

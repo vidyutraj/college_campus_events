@@ -9,8 +9,10 @@
   --color-primary: #2985db;
   --color-secondary: #9657e8;
   --color-secondary-dark: #8248cf;
+  --color-secondary-light: #b27ff6;
   --color-tertiary: #F7BB3D;
   --color-tertiary-dark: #dba42d;
+  --color-tertiary-light: #ebbe5c;
   --color-primary-dark: #1565c0;
   --color-primary-light: #42a5f5;
 
@@ -43,10 +45,30 @@ code {
   100% { opacity: 1; transform: translateY(0); }
 }
 
+[class*="btn-"] {
+  @apply disabled:cursor-not-allowed transition-colors cursor-pointer;
+}
+
 .btn-primary {
-  @apply bg-primary text-white hover:bg-primary-dark;
+  @apply bg-primary text-background hover:bg-primary-dark disabled:bg-primary-light;
 }
 
 .btn-secondary {
-  @apply bg-secondary text-white hover:bg-secondary-dark;
+  @apply bg-secondary text-background hover:bg-secondary-dark disabled:bg-secondary-light;
+}
+
+.btn-tertiary {
+  @apply bg-tertiary text-foreground hover:bg-tertiary-dark disabled:bg-tertiary-light;
+}
+
+.input-focus-primary {
+  @apply focus:outline-hidden focus:border-primary focus:ring-3 focus:ring-primary/20;
+}
+
+.input-focus-secondary {
+  @apply focus:outline-hidden focus:border-secondary focus:ring-3 focus:ring-secondary/20;
+}
+
+.input-gray {
+  @apply bg-background border border-foreground/20;
 }

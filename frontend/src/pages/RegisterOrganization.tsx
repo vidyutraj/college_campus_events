@@ -77,12 +77,12 @@ export default function RegisterOrganization() {
 
     if (!isAuthenticated) {
         return (
-            <div className="container mx-auto p-4">
+            <div className="container mx-auto p-10">
                 <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
                 <p>You must be logged in to create an organization.</p>
                 <button
                     onClick={() => navigate("/login")}
-                    className="mt-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                    className="mt-4 py-2 px-4 font-medium rounded-md btn-secondary"
                 >
                     Login
                 </button>
@@ -91,8 +91,8 @@ export default function RegisterOrganization() {
     }
 
     return (
-        <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-5 py-12 bg-gray-50">
-            <div className="bg-white border border-gray-200 rounded-lg shadow-md p-8 w-full max-w-2xl">
+
+            <div className="p-10">
                 <h2 className="text-3xl font-bold mb-2">
                     Register Your Organization
                 </h2>
@@ -125,7 +125,7 @@ export default function RegisterOrganization() {
                             required
                             placeholder="e.g., Computer Science Club"
                             maxLength={200}
-                            className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
+                            className="w-full input-gray rounded-md px-4 py-2 input-focus-primary"
                         />
                     </div>
 
@@ -141,35 +141,20 @@ export default function RegisterOrganization() {
                             name="description"
                             value={formData.description}
                             onChange={handleChange}
-                            rows={5}
+                            rows={8}
                             placeholder="Tell us about your organization..."
-                            className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-hidden focus:ring-2 focus:ring-primary"
+                            className="w-full input-gray rounded-md px-4 py-2 input-focus-primary"
                         />
                     </div>
 
                     <button
                         type="submit"
                         disabled={loading}
-                        className="cursor-pointer w-full bg-secondary text-white py-3 rounded-full font-medium hover:bg-secondary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full btn-primary px-4 py-2 rounded-md font-medium"
                     >
                         {loading ? "Registering..." : "Register Organization"}
                     </button>
                 </form>
-
-                {!isAuthenticated && (
-                    <div className="mt-6 text-center text-sm text-gray-600">
-                        <p>
-                            Already have an account?{" "}
-                            <Link
-                                to="/login"
-                                className="text-primary hover:text-primary-dark font-medium"
-                            >
-                                Sign in
-                            </Link>
-                        </p>
-                    </div>
-                )}
             </div>
-        </div>
     );
 }

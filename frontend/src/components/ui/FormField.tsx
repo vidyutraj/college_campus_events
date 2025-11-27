@@ -31,7 +31,7 @@ export default function FormField({
     step,
 }: FormFieldProps) {
     const baseClass =
-        "mt-1 block w-full border border-gray-300 rounded-md shadow-xs p-2 focus:ring-indigo-500 focus:border-indigo-500";
+        "mt-1 block w-full input-gray rounded-md p-2 input-focus-secondary";
 
     if (type === "checkbox") {
         return (
@@ -91,7 +91,7 @@ export default function FormField({
                     value={value as string}
                     onChange={onChange}
                     required={required}
-                    rows={4}
+                    rows={5}
                     className={baseClass}
                 />
             </div>

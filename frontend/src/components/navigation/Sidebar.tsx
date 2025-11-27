@@ -17,7 +17,7 @@ interface SidebarProps {
 
 export default function Sidebar({ sbCollapsed }: SidebarProps) {
     const location = useLocation();
-    const { user, isAuthenticated, memberOrgs } = useAuth();
+    const { user, isAuthenticated, memberOrgs, boardMemberOrgs } = useAuth();
 
     const campusNavItems = [
         { name: "Events", href: "/events", icon: LuCalendar },
@@ -168,17 +168,17 @@ export default function Sidebar({ sbCollapsed }: SidebarProps) {
                 {!sbCollapsed ? (
                     <>
                         <Link to="/organizations/create">
-                            <button className="cursor-pointer w-full btn-primary
-                                               rounded px-4 py-2 font-medium transition-colors">
+                            <button className="w-full btn-primary
+                                               rounded px-4 py-2 font-medium">
                                 + New Organization
                             </button>
                         </Link>
-                        <Link to="/events/create">
-                            <button className="cursor-pointer w-full btn-secondary
-                                               rounded px-4 py-2 font-medium transition-colors">
+                        {boardMemberOrgs.length > 0 && <Link to="/events/create">
+                            <button className="w-full btn-secondary
+                                               rounded px-4 py-2 font-medium">
                                 + New Event
                             </button>
-                        </Link>
+                        </Link>}
                     </>
                 ) : (
                     <div className="group">
@@ -198,16 +198,16 @@ export default function Sidebar({ sbCollapsed }: SidebarProps) {
                                       bg-white p-2 text-sm"
                             >
                                 <Link to="/organizations/create">
-                                <button className="cursor-pointer w-full btn-primary
+                                <button className="w-full btn-primary
                                                    rounded px-4 py-2 font-medium">
                                     + New Organization
                                 </button>
                                 </Link>
                                 <Link to="/events/create">
-                                <button className="cursor-pointer w-full btn-secondary
+                                {boardMemberOrgs.length > 0 && <button className="w-full btn-secondary
                                                    rounded px-4 py-2 font-medium">
                                     + New Event
-                                </button>
+                                </button>}
                                 </Link>
                             </div>
                         </div>

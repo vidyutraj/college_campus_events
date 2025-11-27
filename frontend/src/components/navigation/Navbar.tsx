@@ -52,9 +52,8 @@ export default function Navbar() {
                         <>
                             <Link
                                 to="/events"
-                                className="transition-all font-medium rounded-full
-                                           text-white border border-secondary bg-secondary
-                                           hover:bg-secondary-dark hover:border-secondary-dark
+                                className="font-medium rounded-full btn-secondary
+                                           border border-secondary hover:border-secondary-dark
                                            px-4 py-1"
                             >
                                 Browse Events

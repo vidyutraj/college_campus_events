@@ -25,7 +25,7 @@ export default function CreateEvent() {
         categoryId: "",
         subcategory: "",
         employersInAttendance: "",
-        hostOrganizationId: "", // Add this line
+        hostOrganizationId: "",
     });
 
     const [categories, setCategories] = useState<Category[]>([]);
@@ -35,7 +35,7 @@ export default function CreateEvent() {
     const {
         isAuthenticated,
         loading,
-        leadOrgs: authOrganization,
+        boardMemberOrgs: authOrganization,
     } = useAuth();
 
     useEffect(() => {
@@ -148,12 +148,12 @@ export default function CreateEvent() {
 
     if (!isAuthenticated) {
         return (
-            <div className="container mx-auto p-4">
+            <div className="container mx-auto p-10">
                 <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
                 <p>You must be logged in to create an event.</p>
                 <button
                     onClick={() => navigate("/login")}
-                    className="mt-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                    className="mt-4 py-2 px-4 text-sm font-medium rounded-md btn-secondary"
                 >
                     Login
                 </button>
@@ -162,7 +162,7 @@ export default function CreateEvent() {
     }
     if (authOrganization.length == 0) {
         return (
-            <div className="container mx-auto p-4">
+            <div className="container mx-auto p-10">
                 <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
                 <p>
                     You must be logged in as a user associated with an
@@ -170,7 +170,7 @@ export default function CreateEvent() {
                 </p>
                 <button
                     onClick={() => navigate("/events")}
-                    className="mt-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                    className="mt-4 py-2 px-4 text-sm font-medium rounded btn-secondary"
                 >
                     View Events
                 </button>
@@ -179,8 +179,8 @@ export default function CreateEvent() {
     }
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">Create New Event</h1>
+        <div className="container mx-auto p-10">
+            <h1 className="text-3xl font-bold mb-4">Create New Event</h1>
 
             {error && (
                 <div className="bg-red-100 border border-red-400 text-red-700 p-4 rounded mb-4">
@@ -325,7 +325,7 @@ export default function CreateEvent() {
 
                 <button
                     type="submit"
-                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                    className="mt-2 w-full py-2 px-4 font-medium rounded-md btn-secondary"
                 >
                     Create Event
                 </button>
