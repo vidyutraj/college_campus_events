@@ -45,6 +45,10 @@ export default function Events() {
         fetchEvents();
     }, []);
 
+    useEffect(() => {
+        fetchEvents();
+    }, [filters]);
+
     const fetchCategories = async () => {
         try {
             const response = await axiosInstance.get(CATEGORIES_URL);
@@ -376,59 +380,67 @@ export default function Events() {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {events.filter((event) => event.is_approved == true && event.status == "published").map((event) => (
-                        <div
-                            key={event.id}
-                            className="bg-white border border-gray-200 rounded-lg p-6 shadow-xs hover:shadow-md transition-all cursor-pointer hover:-translate-y-1"
-                            onClick={() => handleEventClick(event.id)}
-                        >
-                            <h3 className="text-xl font-bold mb-3">
-                                {event.title}
-                            </h3>
-                            <div className="space-y-2 text-sm text-foreground/80 mb-4">
-                                <p>
-                                    <strong>Date & Time:</strong>{" "}
-                                    {formatDate(event.start_datetime)}
-                                </p>
-                                <p>
-                                    <strong>Location:</strong> {event.location}
-                                </p>
-                                <p>
-                                    <strong>Modality:</strong> {event.modality}
-                                </p>
-                                {event.host_organization && (
+                    {events
+                        .filter(
+                            (event) =>
+                                event.is_approved == true &&
+                                event.status == "published"
+                        )
+                        .map((event) => (
+                            <div
+                                key={event.id}
+                                className="bg-white border border-gray-200 rounded-lg p-6 shadow-xs hover:shadow-md transition-all cursor-pointer hover:-translate-y-1"
+                                onClick={() => handleEventClick(event.id)}
+                            >
+                                <h3 className="text-xl font-bold mb-3">
+                                    {event.title}
+                                </h3>
+                                <div className="space-y-2 text-sm text-foreground/80 mb-4">
                                     <p>
-                                        <strong>Host:</strong>{" "}
-                                        {event.host_organization.name}
+                                        <strong>Date & Time:</strong>{" "}
+                                        {formatDate(event.start_datetime)}
                                     </p>
-                                )}
-                                {event.category && (
                                     <p>
-                                        <strong>Category:</strong>{" "}
-                                        {event.category.name}
+                                        <strong>Location:</strong>{" "}
+                                        {event.location}
                                     </p>
-                                )}
-                                <div className="flex gap-2 flex-wrap mt-2">
-                                    {event.has_free_food && (
-                                        <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs">
-                                            🍕 Free Food
-                                        </span>
+                                    <p>
+                                        <strong>Modality:</strong>{" "}
+                                        {event.modality}
+                                    </p>
+                                    {event.host_organization && (
+                                        <p>
+                                            <strong>Host:</strong>{" "}
+                                            {event.host_organization.name}
+                                        </p>
                                     )}
-                                    {event.has_free_swag && (
-                                        <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">
-                                            🎁 Free Swag
-                                        </span>
+                                    {event.category && (
+                                        <p>
+                                            <strong>Category:</strong>{" "}
+                                            {event.category.name}
+                                        </p>
                                     )}
+                                    <div className="flex gap-2 flex-wrap mt-2">
+                                        {event.has_free_food && (
+                                            <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs">
+                                                🍕 Free Food
+                                            </span>
+                                        )}
+                                        {event.has_free_swag && (
+                                            <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">
+                                                🎁 Free Swag
+                                            </span>
+                                        )}
+                                    </div>
+                                    <p className="text-primary font-medium">
+                                        {event.rsvp_count || 0} RSVPs
+                                    </p>
                                 </div>
-                                <p className="text-primary font-medium">
-                                    {event.rsvp_count || 0} RSVPs
+                                <p className="text-gray-700 line-clamp-3">
+                                    {event.description}
                                 </p>
                             </div>
-                            <p className="text-gray-700 line-clamp-3">
-                                {event.description}
-                            </p>
-                        </div>
-                    ))}
+                        ))}
                 </div>
             )}
         </div>
