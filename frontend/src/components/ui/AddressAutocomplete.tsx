@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { StandaloneSearchBox } from '@react-google-maps/api';
 
 interface AddressAutocompleteProps {

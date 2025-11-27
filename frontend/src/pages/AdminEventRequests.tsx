@@ -4,15 +4,14 @@ import axiosInstance from "../utils/axiosConfig";
 import type { Event } from "../types";
 import { useAuth } from "../context/AuthContext";
 
-const API_BASE_URL = "/api/events/";
-
 export default function AdminEventRequests() {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [actionLoading, setActionLoading] = useState<number | null>(null);
+    const [error, setError] = useState("");
+    const [rejecting, setRejecting] = useState(-1);
+    const [approving, setApproving] = useState(-1);
 
     useEffect(() => {
         fetchPending();
@@ -21,9 +20,12 @@ export default function AdminEventRequests() {
     const fetchPending = async () => {
         try {
             setLoading(true);
-            const { data } = await axiosInstance.get(`${API_BASE_URL}pending_approval/`);
+            const params = { is_approved: false };
+            const { data } = await axiosInstance.get("/api/events/", {
+                params: params,
+            });
             setEvents(data.results || data);
-            setError(null);
+            setError("");
         } catch (err) {
             console.error("Error fetching pending events:", err);
             setError("Failed to load pending events.");
@@ -34,27 +36,28 @@ export default function AdminEventRequests() {
 
     const handleApprove = async (id: number) => {
         try {
-            setActionLoading(id);
-            await axiosInstance.post(`${API_BASE_URL}${id}/approve/`, {});
+            setApproving(id);
+            await axiosInstance.post(`/api/events/${id}/approve/`);
+            alert("Event approved successfully.");
             await fetchPending();
         } catch (err) {
             console.error("Error approving event:", err);
             alert("Failed to approve event.");
         } finally {
-            setActionLoading(null);
+            setApproving(-1);
         }
     };
 
     const handleReject = async (id: number) => {
         try {
-            setActionLoading(id);
-            await axiosInstance.post(`${API_BASE_URL}${id}/reject/`, {});
+            setRejecting(id);
+            await axiosInstance.post(`/api/events/${id}/reject/`, {});
             await fetchPending();
         } catch (err) {
             console.error("Error rejecting event:", err);
             alert("Failed to reject event.");
         } finally {
-            setActionLoading(null);
+            setRejecting(-1);
         }
     };
 
@@ -150,19 +153,19 @@ export default function AdminEventRequests() {
                                 </button>
                                 <button
                                     onClick={() => handleApprove(event.id)}
-                                    disabled={actionLoading === event.id}
+                                    disabled={approving === event.id}
                                     className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 disabled:opacity-50"
                                 >
-                                    {actionLoading === event.id
+                                    {approving === event.id
                                         ? "Approving..."
                                         : "Approve"}
                                 </button>
                                 <button
                                     onClick={() => handleReject(event.id)}
-                                    disabled={actionLoading === event.id}
+                                    disabled={rejecting === event.id}
                                     className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
                                 >
-                                    {actionLoading === event.id
+                                    {rejecting === event.id
                                         ? "Rejecting..."
                                         : "Reject"}
                                 </button>

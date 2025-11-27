@@ -22,18 +22,13 @@ class EventViewSet(viewsets.ModelViewSet):
     serializer_class = EventSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['category', 'modality', 'has_free_food', 'has_free_swag', 'host_organization']
+    filterset_fields = ['category', 'modality', 'has_free_food', 'has_free_swag', 'host_organization', 'is_approved', 'status']
     search_fields = ['title', 'description', 'location']
     ordering_fields = ['start_datetime', 'created_at']
     ordering = ['-start_datetime']
 
     def get_queryset(self):
-        # For detail view (retrieve), allow fetching any event regardless of status
-        if self.action == 'retrieve' or (self.request.user.is_staff):
-            return Event.objects.all()
-        
-        # For list view, apply filters for published and approved events
-        queryset = Event.objects.filter(status='published', is_approved=True)
+        queryset = Event.objects.all()
         
         # Filter by date range if provided
         start_date = self.request.query_params.get('start_date', None)
@@ -49,15 +44,6 @@ class EventViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(start_datetime__gte=timezone.now())
         
         return queryset
-
-    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAdminUser])
-    def pending_approval(self, request):
-        """
-        List all pending events for admin approval.
-        """
-        queryset = self.filter_queryset(self.get_queryset()).filter(is_approved=False)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
 
     def perform_create(self, serializer):
         host_user = self.request.user
@@ -75,6 +61,24 @@ class EventViewSet(viewsets.ModelViewSet):
         else:
             # Otherwise, save without host_organization, relying on other defaults/logic
             serializer.save(host_user=host_user)
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser])
+    def approve(self, request, pk=None):
+        """Approve an event (set is_approved=True)"""
+        event = self.get_object()
+        if event.is_approved:
+            return Response(
+                {'message': 'Event is already approved.'},
+                status=status.HTTP_200_OK
+            )
+
+        event.is_approved = True
+        event.save()
+
+        return Response(
+            {'message': 'Event approved successfully.', 'event': EventSerializer(event).data},
+            status=status.HTTP_200_OK
+        )
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def rsvp(self, request, pk=None):

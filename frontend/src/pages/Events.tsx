@@ -3,10 +3,6 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosConfig";
 import type { Event, Category, Organization } from "../types";
 
-const API_BASE_URL = "/api/events/";
-const CATEGORIES_URL = "/api/categories/";
-const ORGANIZATIONS_URL = "/api/organizations/";
-
 interface Filters {
     category: string;
     organization: string;
@@ -51,7 +47,7 @@ export default function Events() {
 
     const fetchCategories = async () => {
         try {
-            const response = await axiosInstance.get(CATEGORIES_URL);
+            const response = await axiosInstance.get("/api/categories/");
             setCategories(response.data.results || response.data);
         } catch (err) {
             console.error("Error fetching categories:", err);
@@ -60,7 +56,7 @@ export default function Events() {
 
     const fetchOrganizations = async () => {
         try {
-            const response = await axiosInstance.get(ORGANIZATIONS_URL);
+            const response = await axiosInstance.get("/api/organizations/");
             setOrganizations(response.data.results || response.data);
         } catch (err) {
             console.error("Error fetching organizations:", err);
@@ -71,6 +67,9 @@ export default function Events() {
         try {
             setLoading(true);
             const params: Record<string, string> = {};
+
+            params.is_approved = "true";
+            params.status = "published";
 
             if (filters.category) {
                 params.category = filters.category;
@@ -94,7 +93,9 @@ export default function Events() {
                 params.end_date = filters.endDate;
             }
 
-            const response = await axiosInstance.get(API_BASE_URL, { params });
+            const response = await axiosInstance.get("/api/events/", {
+                params,
+            });
             setEvents(response.data.results || response.data);
             setError(null);
         } catch (err) {

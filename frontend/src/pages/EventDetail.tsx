@@ -5,8 +5,6 @@ import type { Event } from "../types";
 import { AxiosError } from "axios";
 import { useAuth } from "../context/AuthContext";
 
-const API_BASE_URL = "/api/events/";
-
 export default function EventDetail() {
     const { id } = useParams<{ id: string }>();
     const location = useLocation();
@@ -24,7 +22,7 @@ export default function EventDetail() {
     const fetchEvent = async () => {
         try {
             setLoading(true);
-            const response = await axiosInstance.get(`${API_BASE_URL}${id}/`);
+            const response = await axiosInstance.get(`/api/events/${id}/`);
             setEvent(response.data);
             setForm(response.data);
             setError(null);
@@ -63,7 +61,7 @@ export default function EventDetail() {
                 end_datetime: form.end_datetime,
                 modality: form.modality,
             };
-            await axiosInstance.put(`${API_BASE_URL}${id}/`, payload);
+            await axiosInstance.put(`/api/events/${id}/`, payload);
             await fetchEvent();
             setEditing(false);
         } catch (err) {
@@ -99,7 +97,7 @@ export default function EventDetail() {
             setRsvpLoading(true);
             setRsvpError(null);
             const response = await axiosInstance.post(
-                `${API_BASE_URL}${id}/rsvp/`,
+                `/api/events/${id}/rsvp/`,
                 {}
             );
 
@@ -132,7 +130,7 @@ export default function EventDetail() {
             setRsvpLoading(true);
             setRsvpError(null);
             const response = await axiosInstance.delete(
-                `${API_BASE_URL}${id}/cancel_rsvp/`
+                `/api/events/${id}/cancel_rsvp/`
             );
 
             await fetchEvent();
