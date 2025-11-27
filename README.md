@@ -70,7 +70,7 @@ Once verified, organizations will appear in the public API endpoints and can be 
 - `/events/:id` - Event detail page with RSVP functionality
 - `/login` - Login page (students and organization leaders)
 - `/register` - Student registration
-- `/create-organization` - Organization registration
+- `/organizations/create` - Organization registration
 - `/leader/dashboard` - Organization leader dashboard (future)
 
 ## Authentication Flow

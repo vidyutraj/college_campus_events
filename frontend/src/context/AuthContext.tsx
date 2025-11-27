@@ -1,20 +1,16 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import axiosInstance from '../utils/axiosConfig';
-import type { Organization, User, UserType } from '../types';
+import type { Organization, User } from '../types';
 
 interface AuthContextType {
   user: User | null;
-  userType: UserType | null;
   loading: boolean;
-  login: (userData: User, userTypeData: UserType, organizationData: Organization) => void;
+  login: (userData: User, organizationsData?: Organization[]) => void;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
   isAuthenticated: boolean;
-  isStudent: boolean;
-  isOrganizationLeader: boolean;
-  isSiteAdmin: boolean;
-  organization: Organization | null; // New field for organization name
+  organizations: Organization[]; // New field for organization name
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -27,8 +23,7 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
-  const [userType, setUserType] = useState<UserType | null>(null);
-  const [organization, setOrganization] = useState<Organization | null>(null);
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -41,26 +36,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       if (userResponse.data.is_authenticated) {
         setUser(userResponse.data.user);
-        setUserType(userResponse.data.user_type);
-        setOrganization(userResponse.data.organization);
+        setOrganizations(userResponse.data.organizations);
       } else {
         setUser(null);
-        setUserType(null);
-        setOrganization(null);
+        setOrganizations([]);
       }
     } catch (err) {
       console.error('Error checking auth:', err);
       setUser(null);
-      setUserType(null);
     } finally {
       setLoading(false);
     }
   };
 
-  const login = (userData: User, userTypeData: UserType, organization: Organization) => {
+  const login = (userData: User, organizations?: Organization[]) => {
     setUser(userData);
-    setUserType(userTypeData);
-    setOrganization(organization);
+    setOrganizations(organizations ?? []);
   };
 
   const logout = async () => {
@@ -70,22 +61,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.error('Error logging out:', err);
     } finally {
       setUser(null);
-      setUserType(null);
     }
   };
 
   const value: AuthContextType = {
     user,
-    userType,
     loading,
     login,
     logout,
     checkAuth,
     isAuthenticated: !!user,
-    isStudent: userType === 'student',
-    isOrganizationLeader: userType === 'organization_leader',
-    isSiteAdmin: userType === 'site_admin',
-    organization: organization,
+    organizations: organizations,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

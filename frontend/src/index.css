@@ -4,7 +4,7 @@
 
 @theme {
   --color-background: #ffffff;
-  --color-foreground: #3b3352;
+  --color-foreground: #181424;
 
   --color-primary: #2985db;
   --color-secondary: #9657e8;
@@ -16,6 +16,8 @@
 
   --font-stack: "Stack Sans Text", sans-serif; 
   --font-inter: "Inter", sans-serif; 
+
+  --inset-shadow-md: inset 0 2px 3px rgba(0, 0, 0, 1); 
 }
 
 body {
@@ -31,3 +33,20 @@ code {
     monospace;
 }
 
+.slide-word {
+  display: inline-block;
+  animation: slideUp 1.5s ease;
+}
+
+@keyframes slideUp {
+  0% { opacity: 0; transform: translateY(5px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.btn-primary {
+  @apply bg-primary text-white hover:bg-primary-dark;
+}
+
+.btn-secondary {
+  @apply bg-secondary text-white hover:bg-secondary-dark;
+}

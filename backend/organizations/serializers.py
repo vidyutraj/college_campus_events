@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import Organization, OrganizationMember
-from accounts.models import OrganizationLeaderProfile
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -17,7 +16,6 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 
 from django.contrib.auth.models import User
-from accounts.models import OrganizationLeaderProfile
 
 class OrganizationRegistrationSerializer(serializers.ModelSerializer):
     """Serializer for registering a new organization and its creating user"""
@@ -75,12 +73,13 @@ class OrganizationRegistrationSerializer(serializers.ModelSerializer):
             description=validated_data.get('description', ''),
             created_by=user # Link the organization to the user who created it
         )
-        
-        # Create an OrganizationLeaderProfile for the user
-        OrganizationLeaderProfile.objects.create(
+
+        OrganizationMember.objects.create(
             user=user,
             organization=organization,
-            is_board_member=True # The creator is automatically a board member
+            is_board_member=True,
+            is_leader=True,
+            role="President"
         )
         
         return organization

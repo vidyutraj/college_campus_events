@@ -2,8 +2,11 @@ from django.contrib.auth.models import User
 from django.db import models
 class Organization(models.Model):
     """Student organization/club"""
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True)
+    website = models.URLField(blank=True)
+    instagram = models.CharField(max_length=255, blank=True)
+    logo = models.ImageField(upload_to="org_logos/", blank=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='created_organizations', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -22,6 +25,7 @@ class OrganizationMember(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='organization_memberships')
     is_board_member = models.BooleanField(default=False)
     is_leader = models.BooleanField(default=False)
+    role = models.CharField(max_length=255, blank=True)
     joined_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

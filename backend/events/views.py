@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils import timezone
+
+from organizations.models import Organization
 from .models import Event, EventCategory, RSVP
 from .serializers import EventSerializer, EventCategorySerializer, RSVPSerializer
 
@@ -32,7 +34,7 @@ class EventViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         # For detail view (retrieve), allow fetching any event regardless of status
-        if self.action == 'retrieve':
+        if self.action == 'retrieve' or (self.action == 'pending_approval' and self.request.user.is_staff):
             return Event.objects.all()
         
         # For list view, apply filters for published and approved events
@@ -53,12 +55,33 @@ class EventViewSet(viewsets.ModelViewSet):
         
         return queryset
 
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAdminUser])
+    def pending_approval(self, request):
+        """
+        List all pending events for admin approval.
+        """
+        queryset = self.filter_queryset(self.get_queryset()).filter(is_approved=False)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
     def perform_create(self, serializer):
         host_user = None
         if self.request.user.is_authenticated:
             host_user = self.request.user
         
-        serializer.save(host_user=host_user)
+        # Get host_organization from validated data if present
+        host_organization_id = self.request.data.get('host_organization')
+        if host_organization_id:
+            # If host_organization_id is provided, fetch the Organization instance
+            try:
+                organization_instance = Organization.objects.get(id=host_organization_id)
+                serializer.save(host_user=host_user, host_organization=organization_instance)
+            except Organization.DoesNotExist:
+                # Handle case where organization ID is invalid
+                raise serializer.ValidationError({"host_organization": "Organization with this ID does not exist."})
+        else:
+            # Otherwise, save without host_organization, relying on other defaults/logic
+            serializer.save(host_user=host_user)
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def rsvp(self, request, pk=None):
