@@ -25,13 +25,18 @@ export default function CreateEvent() {
         categoryId: "",
         subcategory: "",
         employersInAttendance: "",
+        hostOrganizationId: "", // Add this line
     });
 
     const [categories, setCategories] = useState<Category[]>([]);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const navigate = useNavigate();
-    const { isAuthenticated, loading, organization, isOrganizationLeader } = useAuth();
+    const {
+        isAuthenticated,
+        loading,
+        organizations: authOrganization,
+    } = useAuth();
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -76,11 +81,17 @@ export default function CreateEvent() {
         setError("");
         setSuccess("");
 
-        if (!organization) {
+        if (!authOrganization || authOrganization.length === 0) {
             setError(
-                "Authentication error: User is not associated with an organization. Please refresh and try again."
+                "Authentication error: User is not associated with an organization or no organizations found. Please refresh and try again."
             );
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            return;
+        }
+
+        if (!formData.hostOrganizationId) {
+            setError("Please select a host organization.");
+            window.scrollTo({ top: 0, behavior: "smooth" });
             return;
         }
 
@@ -102,14 +113,14 @@ export default function CreateEvent() {
                 category_id: formData.categoryId,
                 subcategory: formData.subcategory,
                 employers_in_attendance: formData.employersInAttendance,
-                host_organization: organization,
+                host_organization: formData.hostOrganizationId, // Use the selected organization ID
             };
 
             if (payload.start_datetime > payload.end_datetime) {
                 setError(
                     "Start date and time must be before end date and time."
                 );
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollTo({ top: 0, behavior: "smooth" });
                 return;
             }
 
@@ -123,12 +134,16 @@ export default function CreateEvent() {
             } else {
                 setError("Failed to create event. Please try again.");
             }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
     };
 
     if (loading) {
-        return <div className="container mx-auto p-4">Loading authentication status...</div>;
+        return (
+            <div className="container mx-auto p-4">
+                Loading authentication status...
+            </div>
+        );
     }
 
     if (!isAuthenticated) {
@@ -145,11 +160,14 @@ export default function CreateEvent() {
             </div>
         );
     }
-    if (!isOrganizationLeader) {
+    if (authOrganization.length == 0) {
         return (
             <div className="container mx-auto p-4">
                 <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
-                <p>You must be logged in as a user associated with an organization to create an event.</p>
+                <p>
+                    You must be logged in as a user associated with an
+                    organization to create an event.
+                </p>
                 <button
                     onClick={() => navigate("/events")}
                     className="mt-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
@@ -176,6 +194,19 @@ export default function CreateEvent() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
+                {authOrganization && authOrganization.length > 0 && (
+                    <FormField
+                        label="Host Organization"
+                        name="hostOrganizationId" // Use the new state field
+                        value={formData.hostOrganizationId}
+                        onChange={handleChange}
+                        options={authOrganization.map((org) => ({
+                            value: org.id.toString(), // Ensure value is string for select
+                            label: org.name,
+                        }))}
+                        required
+                    />
+                )}
                 <FormField
                     label="Title"
                     name="title"

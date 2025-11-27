@@ -1,18 +1,20 @@
 export interface User {
   id: number;
   username: string;
-  email?: string;
+  email: string;
   first_name?: string;
   last_name?: string;
-  name?: string;
-  organization?: Organization; // Add this line
+  is_staff: boolean;
 }
 
 export interface Organization {
   id: number;
   name: string;
   description?: string;
-  username?: string;
+  created_at: string;
+  created_by: string;
+  is_verified: boolean;
+  updated_at: string;
 }
 
 export interface Category {
@@ -43,5 +45,3 @@ export interface Event {
   status: "draft" | "published" | "cancelled";
   is_approved: boolean;
 }
-
-export type UserType = 'student' | 'organization_leader' | 'site_admin';

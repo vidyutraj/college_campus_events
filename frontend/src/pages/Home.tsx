@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
-import Typewriter from "./ui/Typewriter";
+import TechTower from "../assets/tech-tower.jpg";
+import { LuArrowRight } from "react-icons/lu";
+import { useEffect, useState } from "react";
 
 const features = [
     {
@@ -16,7 +18,7 @@ const features = [
         description:
             "Register your organization and create events. View RSVPs and track attendance.",
         link_label: "Register Organization",
-        url: "/create-organization",
+        url: "/organizations/create",
     },
     {
         emoji: "📅",
@@ -28,42 +30,74 @@ const features = [
     },
 ];
 
-function Homepage() {
+export default function Home() {
+    const words = ["Buzz", "News", "Updates", "Trends"];
+    const [index, setIndex] = useState(0);
+    const [searchInput, setSearchInput] = useState("");
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setIndex((prev) => (prev + 1) % words.length);
+        }, 3500);
+
+        return () => clearInterval(interval);
+    }, [words.length]);
+
+    function handleSearchInput(e: React.ChangeEvent<HTMLInputElement>) {
+        setSearchInput(e.target.value);
+    }
+
     return (
         <div className="min-h-[calc(100vh-80px)] w-full">
-            {/* Hero Section */}
-            <div className="text-white text-center py-35 px-5 mb-16 bg-linear-to-br from-primary to-secondary">
-                <h1 className="text-5xl md:text-6xl font-semibold mb-5">
-                    Welcome to{" "}
-                    <span className="font-bold text-7xl underline decoration-tertiary underline-offset-8">
-                        <Typewriter text="CampusBuzz" speed={90} />
-                    </span>
-                </h1>
-                <p className="text-xl md:text-2xl mb-10 opacity-95 font-light">
-                    Discover, RSVP, and manage campus events all in one place
-                </p>
-                <div className="flex gap-8 justify-center flex-wrap">
-                    <Link
-                        to="/events"
-                        className="bg-linear-180 from-tertiary to-[#f7ae40] hover:brightness-110
-                                   text-foreground px-8 py-3.5 rounded-full text-xl font-semibold 
-                                   shadow-tertiary/10 shadow-lg hover:shadow-xl
-                                   transition-all duration-300 hover:-translate-y-0.5"
-                    >
-                        Browse Events
-                    </Link>
-                    <Link
-                        to="/login"
-                        className="bg-transparent text-white border-2 border-white px-8 py-3.5 rounded-full text-xl font-semibold transition-all duration-300 hover:bg-white/10 hover:-translate-y-0.5"
-                    >
-                        Sign In
-                    </Link>
+            <div className="min-h-[80vh] w-full flex-col justify-center bg-[url(/grid.jpg)] bg-background/97 bg-blend-lighten">
+                <div className="w-full max-w-7xl flex gap-15 flex-col lg:flex-row pt-10 px-20">
+                    <div className="w-full lg:w-3/5 py-10 flex flex-col gap-8 justify-center">
+                        <h1 className="text-7xl font-bold">
+                            Catch the Latest{" "}
+                            <span
+                                key={index}
+                                className="underline slide-word decoration-tertiary underline-offset-8"
+                            >
+                                {words[index]}
+                            </span>{" "}
+                            Around Campus
+                        </h1>
+                        <h4 className="text-3xl">
+                            Discover, RSVP, and manage campus events all in one
+                            place.
+                        </h4>
+                        <div className="flex items-center mt-5">
+                            <input
+                                className="border-2 border-foreground/60 rounded-full px-5 py-3 text-xl w-full max-w-120 bg-background focus:border-secondary focus:outline-none focus:ring-5 focus:ring-secondary/15"
+                                placeholder="Search events..."
+                                value={searchInput}
+                                onChange={handleSearchInput}
+                            ></input>
+                            <Link
+                                to={`/events${
+                                    searchInput ? "?q=" + searchInput : ""
+                                }`}
+                                className="-ml-12"
+                            >
+                                <div className=" w-10 h-10 bg-secondary text-background text-2xl flex items-center justify-center rounded-full">
+                                    <LuArrowRight />
+                                </div>
+                            </Link>
+                        </div>
+                    </div>
+                    <div className="w-full lg:w-2/5 flex items-center justify-center">
+                        <img
+                            className="aspect-square lg:aspect-auto object-cover object-bottom w-full max-w-120 lg:max-w-90 rounded-3xl"
+                            src={TechTower}
+                        />
+                    </div>
                 </div>
+                <div className="w-full h-10 bg-linear-to-b from-transparent to-white"></div>
             </div>
 
             {/* Features Section */}
-            <div className="max-w-7xl mx-auto px-5 pb-16">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="mx-auto px-5 pt-6 pb-12 bg-white">
+                <div className="max-w-7xl grid grid-cols-1 md:grid-cols-3 gap-8">
                     {features.map((feature) => (
                         <div
                             key={feature.title}
@@ -114,5 +148,3 @@ function Homepage() {
         </div>
     );
 }
-
-export default Homepage;

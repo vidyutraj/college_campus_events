@@ -1,7 +1,5 @@
-import React from "react";
-
 interface Option {
-    value: string;
+    value: string | number;
     label: string;
 }
 
