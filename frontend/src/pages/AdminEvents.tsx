@@ -3,8 +3,8 @@ import axiosInstance from '../utils/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import type { Event, Category, Organization } from '../types';
 
-const ADMIN_EVENTS_URL = '/api/admin/events/';
-const CATEGORIES_URL = '/api/events/categories/';
+const ADMIN_EVENTS_URL = '/api/events/';
+const CATEGORIES_URL = '/api/categories/';
 const ORGANIZATIONS_URL = '/api/organizations/';
 
 interface EventFormValues {
@@ -84,7 +84,7 @@ function toISODateTime(value: string): string | null {
 }
 
 function AdminEvents() {
-  const { loading: authLoading, isSiteAdmin } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [events, setEvents] = useState<Event[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -116,7 +116,7 @@ function AdminEvents() {
       return;
     }
 
-    if (!isSiteAdmin) {
+    if (!user?.is_staff) {
       setPageLoading(false);
       setPageError('You do not have permission to view this page.');
       return;
@@ -136,7 +136,7 @@ function AdminEvents() {
     };
 
     load();
-  }, [authLoading, isSiteAdmin, fetchEvents, fetchLookups]);
+  }, [authLoading, user?.is_staff, fetchEvents, fetchLookups]);
 
   const resetForm = () => {
     setEditingEventId(null);
@@ -303,7 +303,7 @@ function AdminEvents() {
     );
   }
 
-  if (!isSiteAdmin) {
+  if (!user?.is_staff) {
     return (
       <div className="max-w-3xl mx-auto px-5 py-12">
         <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded">
@@ -349,8 +349,8 @@ function AdminEvents() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-2 overflow-x-auto bg-white border border-gray-200 rounded-lg shadow-sm">
+      <div className="grid grid-cols-1 gap-6">
+        <div className="overflow-x-auto bg-white border border-gray-200 rounded-lg shadow-sm">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>

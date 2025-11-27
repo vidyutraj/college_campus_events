@@ -376,7 +376,7 @@ export default function Events() {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {events.map((event) => (
+                    {events.filter((event) => event.is_approved == true && event.status == "published").map((event) => (
                         <div
                             key={event.id}
                             className="bg-white border border-gray-200 rounded-lg p-6 shadow-xs hover:shadow-md transition-all cursor-pointer hover:-translate-y-1"

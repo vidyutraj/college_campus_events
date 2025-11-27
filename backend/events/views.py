@@ -34,7 +34,7 @@ class EventViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         # For detail view (retrieve), allow fetching any event regardless of status
-        if self.action == 'retrieve' or (self.action == 'pending_approval' and self.request.user.is_staff):
+        if self.action == 'retrieve' or (self.request.user.is_staff):
             return Event.objects.all()
         
         # For list view, apply filters for published and approved events
