@@ -2,7 +2,7 @@ import { useAuth } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
 
 export default function Navbar() {
-    const { user, organizations, logout, isAuthenticated } = useAuth();
+    const { user, leadOrgs, logout, isAuthenticated } = useAuth();
 
     const handleLogout = async () => {
         await logout();
@@ -35,7 +35,7 @@ export default function Navbar() {
                                 Welcome, {user?.username} (
                                 {user?.is_staff
                                     ? "Admin"
-                                    : organizations.length > 0
+                                    : leadOrgs.length > 0
                                     ? "Organization Leader"
                                     : "Student"}
                                 )

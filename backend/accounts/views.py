@@ -1,15 +1,12 @@
 from rest_framework import viewsets, status, permissions
-from rest_framework.decorators import api_view, permission_classes, action
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
 from django.contrib.auth import login, logout
-from django.contrib.auth.models import User
 from .models import StudentProfile
 from .serializers import (
     UserSerializer, StudentProfileSerializer, StudentRegistrationSerializer,
     LoginSerializer
 )
-from organizations.models import Organization
 from organizations.serializers import OrganizationSerializer
 
 
@@ -44,18 +41,39 @@ def user_login(request):
         user = serializer.validated_data['user']
         login(request, user)
         
-        # Check user type
-        organization_data = []
+        organizations_leader = []
+        organizations_board_member = []
+        organizations_member = []
+        organizations_unverified = []
+
         if hasattr(user, 'organization_memberships'):
-            leader_memberships = user.organization_memberships.filter(is_leader=True)
-            if leader_memberships.exists():
-                for membership in leader_memberships:
-                    organization_data.append(OrganizationSerializer(membership.organization).data)
-        
+            memberships = user.organization_memberships.all()
+
+            for membership in memberships:
+                org = membership.organization
+                org_data = OrganizationSerializer(org).data
+
+                if not org.is_verified:
+                    organizations_unverified.append(org_data)
+                    continue
+
+                if membership.is_leader:
+                    organizations_leader.append(org_data)
+                
+                if membership.is_board_member:
+                    organizations_board_member.append(org_data)
+                
+                organizations_member.append(org_data)
+                
         return Response({
             'message': 'Login successful',
             'user': UserSerializer(user).data,
-            'organizations': organization_data
+            'organizations': {
+                'leader': organizations_leader,
+                'board_member': organizations_board_member,
+                'member': organizations_member,
+                'unverified': organizations_unverified,
+            }
         }, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -67,41 +85,45 @@ def user_logout(request):
     logout(request)
     return Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
 
-
-@api_view(['GET'])
-@permission_classes([permissions.IsAuthenticated])
-def current_user(request):
-    """Get current authenticated user"""
-    organization_data = []
-    if hasattr(request.user, 'organization_memberships'):
-        leader_memberships = request.user.organization_memberships.filter(is_leader=True)
-        if leader_memberships.exists():
-            for membership in leader_memberships:
-                organization_data.append(OrganizationSerializer(membership.organization).data)
-    
-    return Response({
-        'user': UserSerializer(request.user).data,
-        'organizations': organization_data, # Changed to 'organizations'
-        'is_authenticated': True
-    })
-
-
 @api_view(['GET'])
 @permission_classes([permissions.AllowAny])
 def check_auth(request):
     """Check if user is authenticated"""
     if request.user.is_authenticated:
-        organization_data = []
+
+        organizations_leader = []
+        organizations_board_member = []
+        organizations_member = []
+        organizations_unverified = []
+
         if hasattr(request.user, 'organization_memberships'):
-            leader_memberships = request.user.organization_memberships.filter(is_leader=True)
-            if leader_memberships.exists():
-                for membership in leader_memberships:
-                    organization_data.append(OrganizationSerializer(membership.organization).data)
-        
+            memberships = request.user.organization_memberships.all()
+
+            for membership in memberships:
+                org = membership.organization
+                org_data = OrganizationSerializer(org).data
+
+                if not org.is_verified:
+                    organizations_unverified.append(org_data)
+                    continue
+
+                if membership.is_leader:
+                    organizations_leader.append(org_data)
+                
+                if membership.is_board_member:
+                    organizations_board_member.append(org_data)
+                
+                organizations_member.append(org_data)
+
         return Response({
             'is_authenticated': True,
             'user': UserSerializer(request.user).data,
-            'organizations': organization_data # Changed to 'organizations'
+            'organizations': {
+                'leader': organizations_leader,
+                'board_member': organizations_board_member,
+                'member': organizations_member,
+                'unverified': organizations_unverified,
+            }
         })
     return Response({
         'is_authenticated': False

@@ -17,7 +17,7 @@ interface SidebarProps {
 
 export default function Sidebar({ sbCollapsed }: SidebarProps) {
     const location = useLocation();
-    const { user, isAuthenticated, organizations } = useAuth();
+    const { user, isAuthenticated, memberOrgs } = useAuth();
 
     const campusNavItems = [
         { name: "Events", href: "/events", icon: LuCalendar },
@@ -103,7 +103,7 @@ export default function Sidebar({ sbCollapsed }: SidebarProps) {
                     ))}
                 </div>
             </div>}
-            {organizations.length > 0 && (
+            {memberOrgs.length > 0 && (
                 <div>
                     {!sbCollapsed && (
                         <h3 className="text-sm uppercase text-foreground/50 font-semibold mb-2">
@@ -114,7 +114,7 @@ export default function Sidebar({ sbCollapsed }: SidebarProps) {
                         <hr className="mb-5 border-foreground/15" />
                     )}
                     <div className="space-y-1">
-                        {organizations.map((org) => (
+                        {memberOrgs.map((org) => (
                             <Link
                                 key={org.name}
                                 to={"/organization/" + org.name}

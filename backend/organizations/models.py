@@ -1,11 +1,14 @@
 from django.contrib.auth.models import User
 from django.db import models
+
 class Organization(models.Model):
     """Student organization/club"""
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True)
     website = models.URLField(blank=True)
     instagram = models.CharField(max_length=255, blank=True)
+    slack = models.URLField(blank=True)
+    discord = models.URLField(blank=True)
     logo = models.ImageField(upload_to="org_logos/", blank=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='created_organizations', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -17,7 +20,6 @@ class Organization(models.Model):
 
     class Meta:
         ordering = ['name']
-
 
 class OrganizationMember(models.Model):
     """Members of an organization"""

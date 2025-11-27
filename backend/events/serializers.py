@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import Event, EventCategory, RSVP
 from organizations.models import Organization
-from django.contrib.auth.models import User
 
 
 class EventCategorySerializer(serializers.ModelSerializer):

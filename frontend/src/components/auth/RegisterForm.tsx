@@ -20,6 +20,11 @@ export default function RegisterForm() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
+    const scrollToTop = () => {
+        const container = document.getElementById("left-scroll-container");
+        container?.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
@@ -38,12 +43,14 @@ export default function RegisterForm() {
         if (formData.password !== formData.password_confirm) {
             setError("Passwords do not match.");
             setLoading(false);
+            scrollToTop();
             return;
         }
 
         if (formData.password.length < 8) {
             setError("Password must be at least 8 characters long.");
             setLoading(false);
+            scrollToTop();
             return;
         }
 
@@ -61,7 +68,7 @@ export default function RegisterForm() {
                 const errorMessages: string[] = [];
                 Object.keys(errorData).forEach((key) => {
                     if (Array.isArray(errorData[key])) {
-                        errorMessages.push(`${key}: ${errorData[key][0]}`);
+                        errorMessages.push(`${errorData[key][0]}`);
                     } else {
                         errorMessages.push(errorData[key]);
                     }
@@ -73,6 +80,7 @@ export default function RegisterForm() {
             } else {
                 setError("Registration failed. Please try again.");
             }
+            scrollToTop();
         } finally {
             setLoading(false);
         }

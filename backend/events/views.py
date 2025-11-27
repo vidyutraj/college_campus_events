@@ -1,13 +1,13 @@
 from rest_framework import viewsets, filters, status, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils import timezone
 
 from organizations.models import Organization
 from .models import Event, EventCategory, RSVP
-from .serializers import EventSerializer, EventCategorySerializer, RSVPSerializer
+from .serializers import EventSerializer, EventCategorySerializer
 
 
 class EventCategoryViewSet(viewsets.ReadOnlyModelViewSet):
@@ -21,11 +21,6 @@ class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-
-    def get_permissions(self):
-        if self.action == 'create':
-            return [permissions.AllowAny()]
-        return super().get_permissions()
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['category', 'modality', 'has_free_food', 'has_free_swag', 'host_organization']
     search_fields = ['title', 'description', 'location']
@@ -65,9 +60,7 @@ class EventViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def perform_create(self, serializer):
-        host_user = None
-        if self.request.user.is_authenticated:
-            host_user = self.request.user
+        host_user = self.request.user
         
         # Get host_organization from validated data if present
         host_organization_id = self.request.data.get('host_organization')

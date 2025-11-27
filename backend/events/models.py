@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class EventCategory(models.Model):
@@ -55,10 +54,7 @@ class Event(models.Model):
     
     # Employers/Companies
     employers_in_attendance = models.TextField(blank=True, help_text="List of employers/companies attending")
-    
-    # Management
-    administrators = models.ManyToManyField(User, related_name='administered_events', blank=True)
-    
+        
     # Status and moderation
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
     is_approved = models.BooleanField(default=False)  # For site admin approval

@@ -75,7 +75,7 @@ export default function Home() {
                             ></input>
                             <Link
                                 to={`/events${
-                                    searchInput ? "?q=" + searchInput : ""
+                                    searchInput ? "?search=" + searchInput : ""
                                 }`}
                                 className="-ml-12"
                             >

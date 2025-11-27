@@ -5,14 +5,8 @@ import { useAuth } from "../context/AuthContext";
 import { AxiosError } from "axios";
 
 interface OrganizationFormData {
-    organization_name: string;
-    organization_description: string;
-    user_username?: string;
-    user_email?: string;
-    user_password?: string;
-    user_password_confirm?: string;
-    user_first_name?: string;
-    user_last_name?: string;
+    name: string;
+    description: string;
 }
 
 export default function RegisterOrganization() {
@@ -20,8 +14,8 @@ export default function RegisterOrganization() {
     const { isAuthenticated } = useAuth();
 
     const [formData, setFormData] = useState<OrganizationFormData>({
-        organization_name: "",
-        organization_description: "",
+        name: "",
+        description: "",
     });
 
     const [error, setError] = useState<string | null>(null);
@@ -44,24 +38,16 @@ export default function RegisterOrganization() {
         setError(null);
 
         // --- Validation ---
-        if (!formData.organization_name?.trim()) {
+        if (!formData.name?.trim()) {
             setError("Organization name is required.");
             setLoading(false);
             return;
         }
 
         try {
-            const response = await axiosInstance.post(
-                `/api/organizations/register/`,
-                formData
-            );
+            await axiosInstance.post("/api/organizations/", formData);
 
-            alert(
-                `${
-                    response.data.message ||
-                    "Organization registered successfully!"
-                }`
-            );
+            alert("Organization registered successfully and is now pending approval.");
             navigate("/events");
         } catch (err: unknown) {
             console.error(err);
@@ -82,7 +68,8 @@ export default function RegisterOrganization() {
             } else {
                 setError("Registration failed. Please try again.");
             }
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            const container = document.getElementById("right-scroll-container");
+            container?.scrollTo({ top: 0, behavior: "smooth" });
         } finally {
             setLoading(false);
         }
@@ -124,16 +111,16 @@ export default function RegisterOrganization() {
                     {/* Organization Fields */}
                     <div>
                         <label
-                            htmlFor="organization_name"
+                            htmlFor="name"
                             className="block text-sm font-medium text-gray-700 mb-2"
                         >
                             Organization Name *
                         </label>
                         <input
                             type="text"
-                            id="organization_name"
-                            name="organization_name"
-                            value={formData.organization_name}
+                            id="name"
+                            name="name"
+                            value={formData.name}
                             onChange={handleChange}
                             required
                             placeholder="e.g., Computer Science Club"
@@ -144,15 +131,15 @@ export default function RegisterOrganization() {
 
                     <div>
                         <label
-                            htmlFor="organization_description"
+                            htmlFor="description"
                             className="block text-sm font-medium text-gray-700 mb-2"
                         >
                             Description
                         </label>
                         <textarea
-                            id="organization_description"
-                            name="organization_description"
-                            value={formData.organization_description}
+                            id="description"
+                            name="description"
+                            value={formData.description}
                             onChange={handleChange}
                             rows={5}
                             placeholder="Tell us about your organization..."

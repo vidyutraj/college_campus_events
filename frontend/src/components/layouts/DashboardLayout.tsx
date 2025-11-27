@@ -13,7 +13,7 @@ export default function DashboardLayout() {
             />
             <div className="flex w-full flex-1 max-h-[calc(100%-64px)]">
                 <Sidebar sbCollapsed={sidebarCollapsed} />
-                <div className="flex-1 overflow-y-auto">
+                <div id="right-scroll-container" className="flex-1 overflow-y-auto">
                     <main>
                         <Outlet />
                     </main>

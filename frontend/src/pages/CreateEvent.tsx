@@ -35,7 +35,7 @@ export default function CreateEvent() {
     const {
         isAuthenticated,
         loading,
-        organizations: authOrganization,
+        leadOrgs: authOrganization,
     } = useAuth();
 
     useEffect(() => {

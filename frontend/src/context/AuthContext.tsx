@@ -6,11 +6,21 @@ import type { Organization, User } from '../types';
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (userData: User, organizationsData?: Organization[]) => void;
+  login: (userData: User, organizationsData?: OrganizationsType) => void;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
   isAuthenticated: boolean;
-  organizations: Organization[]; // New field for organization name
+  leadOrgs: Organization[];
+  boardMemberOrgs: Organization[];
+  memberOrgs: Organization[];
+  unverifiedOrgs: Organization[];
+}
+
+interface OrganizationsType {
+  leader: Organization[];
+  board_member: Organization[];
+  member: Organization[];
+  unverified: Organization[];
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -23,7 +33,10 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [leadOrgs, setLeadOrgs] = useState<Organization[]>([]);
+  const [boardMemberOrgs, setBoardMemberOrgs] = useState<Organization[]>([]);
+  const [memberOrgs, setMemberOrgs] = useState<Organization[]>([]);
+  const [unverifiedOrgs, setUnverifiedOrgs] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,10 +49,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       if (userResponse.data.is_authenticated) {
         setUser(userResponse.data.user);
-        setOrganizations(userResponse.data.organizations);
+        setLeadOrgs(userResponse.data.organizations.leader);
+        setBoardMemberOrgs(userResponse.data.organizations.board_member);
+        setMemberOrgs(userResponse.data.organizations.member);
+        setUnverifiedOrgs(userResponse.data.organizations.unverified);
       } else {
         setUser(null);
-        setOrganizations([]);
+        setLeadOrgs([]);
+        setBoardMemberOrgs([]);
+        setMemberOrgs([]);
+        setUnverifiedOrgs([]);
       }
     } catch (err) {
       console.error('Error checking auth:', err);
@@ -49,9 +68,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const login = (userData: User, organizations?: Organization[]) => {
+  const login = (userData: User, organizations?: OrganizationsType) => {
     setUser(userData);
-    setOrganizations(organizations ?? []);
+    setLeadOrgs(organizations?.leader ?? []);
+    setBoardMemberOrgs(organizations?.board_member ?? []);
+    setMemberOrgs(organizations?.member ?? []);
+    setUnverifiedOrgs(organizations?.unverified ?? []);
   };
 
   const logout = async () => {
@@ -71,7 +93,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     logout,
     checkAuth,
     isAuthenticated: !!user,
-    organizations: organizations,
+    leadOrgs: leadOrgs,
+    boardMemberOrgs: boardMemberOrgs,
+    memberOrgs: memberOrgs,
+    unverifiedOrgs: unverifiedOrgs,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

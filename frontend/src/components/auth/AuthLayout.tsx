@@ -18,7 +18,7 @@ export default function AuthLayout({
             className={`h-[calc(100vh-64px)] flex w-full bg-size-[600px] bg-[url(/grid.jpg)] bg-background/98 bg-blend-lighten ${className}`}
         >
             {/* Left Side (content) */}
-            <div className="h-full w-full md:w-1/2 overflow-y-auto">
+            <div className="h-full w-full md:w-1/2 overflow-y-auto" id="left-scroll-container">
                 <div className="py-10 px-12 w-full min-h-full flex justify-center items-center">
                     {children}
                 </div>

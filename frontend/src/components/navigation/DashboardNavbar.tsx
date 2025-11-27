@@ -12,7 +12,7 @@ export default function DashboardNavbar({
     sbCollapsed,
     setSbCollapsed,
 }: DashboardNavbarProps) {
-    const { user, organizations, logout, isAuthenticated } = useAuth();
+    const { user, leadOrgs, logout, isAuthenticated } = useAuth();
 
     const handleLogout = async () => {
         await logout();
@@ -44,7 +44,7 @@ export default function DashboardNavbar({
                                 Welcome, {user?.username} (
                                 {user?.is_staff
                                     ? "Admin"
-                                    : organizations.length > 0
+                                    : leadOrgs.length > 0
                                     ? "Organization Leader"
                                     : "Student"}
                                 )
