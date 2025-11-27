@@ -11,6 +11,8 @@ import AdminEventRequests from "./pages/AdminEventRequests";
 import MainLayout from "./components/layouts/MainLayout";
 import DashboardLayout from "./components/layouts/DashboardLayout";
 import AdminEvents from "./pages/AdminEvents";
+import CreateMeeting from "./pages/CreateMeeting";
+import MeetingsList from "./pages/MeetingsList";
 
 function App() {
     return (
@@ -36,6 +38,11 @@ function App() {
                                 path="/events/create"
                                 element={<CreateEvent />}
                             />
+                            <Route
+                                path="/create-meeting"
+                                element={<CreateMeeting />}
+                            />
+                            <Route path="/meetings" element={<MeetingsList />} />
                             <Route
                                 path="/admin/events"
                                 element={<AdminEvents />}
