@@ -40,8 +40,9 @@ class EventViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(end_datetime__lte=end_date)
         
         # Only show upcoming events by default (can be overridden)
-        if self.request.query_params.get('include_past', 'false').lower() != 'true':
-            queryset = queryset.filter(start_datetime__gte=timezone.now())
+        if self.action != 'retrieve':
+            if self.request.query_params.get('include_past', 'false').lower() != 'true':
+                queryset = queryset.filter(start_datetime__gte=timezone.now())
         
         return queryset
 

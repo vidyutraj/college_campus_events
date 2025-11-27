@@ -9,7 +9,7 @@ export default function EventDetail() {
     const { id } = useParams<{ id: string }>();
     const location = useLocation();
     const fromAdmin = location.state?.fromAdmin === true;
-    const { user } = useAuth();
+    const { user, boardMemberOrgs } = useAuth();
     const [event, setEvent] = useState<Event | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -207,11 +207,11 @@ export default function EventDetail() {
                 </div>
             )}
 
-            {user?.is_staff && (
+            {user?.is_staff || boardMemberOrgs.some(org => org.name === event.host_organization?.name) && (
                 <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-xs mb-6">
                     <div className="flex items-center justify-between flex-wrap gap-3">
                         <div className="text-gray-700 font-medium">
-                            Admin Controls
+                            Event Admin Controls
                         </div>
                         <div className="flex items-center gap-3">
                             {!editing ? (
