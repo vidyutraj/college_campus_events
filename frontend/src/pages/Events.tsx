@@ -391,7 +391,7 @@ export default function Events() {
                     {events
                         .filter(
                             (event) =>
-                                event.is_approved === true &&
+                                event.is_approved &&
                                 event.status === "published"
                         )
                         .map((event) => (

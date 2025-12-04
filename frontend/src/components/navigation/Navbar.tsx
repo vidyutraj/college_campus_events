@@ -1,5 +1,6 @@
 import { useAuth } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
+import Logo from "../../assets/campus-buzz.svg";
 
 export default function Navbar() {
     const { user, leadOrgs, logout, isAuthenticated } = useAuth();
@@ -18,7 +19,7 @@ export default function Navbar() {
                     {/* <IoIosMenu className="opacity-80" size={25} /> */}
                     <Link to="/" className="flex gap-2">
                         <img
-                            src="/campus-buzz.svg"
+                            src={Logo}
                             className="w-8 -mt-1 saturate-120"
                         ></img>
                         <h1

@@ -230,7 +230,7 @@ export default function RegisterForm() {
 
                 <button
                     type="submit"
-                    disabled={true}
+                    disabled={loading}
                     className="mt-2 w-full btn-secondary py-3 rounded-full font-medium"
                 >
                     {loading ? "Creating Account..." : "Create Account"}

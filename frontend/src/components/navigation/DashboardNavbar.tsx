@@ -2,6 +2,7 @@ import { IoIosMenu } from "react-icons/io";
 import { useAuth } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
 import type { Dispatch, SetStateAction } from "react";
+import Logo from "../../assets/campus-buzz.svg";
 
 interface DashboardNavbarProps {
     sbCollapsed: boolean;
@@ -31,7 +32,7 @@ export default function DashboardNavbar({
                     </button>
                     <Link to="/events" className="flex gap-2">
                         <img
-                            src="/campus-buzz.svg"
+                            src={Logo}
                             className="w-8 -mt-1 saturate-120"
                         ></img>
                         <h1 className="font-bold m-0 text-2xl">CampusBuzz</h1>

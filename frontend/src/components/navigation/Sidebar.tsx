@@ -189,12 +189,12 @@ export default function Sidebar({ sbCollapsed }: SidebarProps) {
                             <LuPlus />
                         </button>
                         <div
-                            className="transition-all overflow-hidden fixed bottom-4 left-10 pl-10 shadow
+                            className="transition-all overflow-hidden fixed bottom-4 left-10 pl-10
                                         opacity-0 w-0 h-0
                                         group-hover:opacity-100 group-hover:h-[98px] group-hover:w-70"
                         >
                             <div
-                                className="flex flex-col gap-2 w-60 border border-dashed rounded border-foreground/15
+                                className="flex flex-col gap-2 w-60 border border-dashed rounded border-foreground/15 shadow
                                       bg-white p-2 text-sm"
                             >
                                 <Link to="/organizations/create">

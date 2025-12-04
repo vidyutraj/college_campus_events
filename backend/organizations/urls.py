@@ -6,6 +6,6 @@ router = DefaultRouter()
 router.register(r'organizations', views.OrganizationViewSet, basename='organization')
 
 urlpatterns = [
-    path('api/', include(router.urls)),
+    path('', include(router.urls)),
 ]
 

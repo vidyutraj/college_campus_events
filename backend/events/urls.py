@@ -7,6 +7,6 @@ router.register(r'categories', views.EventCategoryViewSet, basename='eventcatego
 router.register(r'events', views.EventViewSet, basename='event')
 
 urlpatterns = [
-    path('api/', include(router.urls)),
+    path('', include(router.urls)),
 ]
 
