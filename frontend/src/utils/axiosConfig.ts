@@ -18,7 +18,7 @@ function getCookie(name: string): string | null {
 
 // Create axios instance with default config
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true, // Important for session cookies
   headers: {
     'Content-Type': 'application/json',
