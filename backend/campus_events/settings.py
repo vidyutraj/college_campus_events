@@ -160,6 +160,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
     "http://localhost:3000",  # Keep for backwards compatibility
     "http://127.0.0.1:3000",
+    "https://campusbuzz.pythonanywhere.com",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
