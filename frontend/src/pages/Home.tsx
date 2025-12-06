@@ -50,9 +50,9 @@ export default function Home() {
     return (
         <div className="min-h-[calc(100vh-80px)] w-full">
             <div className="min-h-[80vh] w-full flex-col justify-center bg-[url(/grid.jpg)] bg-background/97 bg-blend-lighten">
-                <div className="w-full max-w-7xl flex gap-15 flex-col lg:flex-row pt-10 px-20">
-                    <div className="w-full lg:w-3/5 py-10 flex flex-col gap-8 justify-center">
-                        <h1 className="text-7xl font-bold">
+                <div className="w-full max-w-7xl flex gap-15 flex-col lg:flex-row pt-2 px-10 sm:pt-10 sm:px-20">
+                    <div className="w-full lg:w-3/5 pt-10 sm:py-10 flex flex-col gap-8 justify-center">
+                        <h1 className="text-6xl sm:text-7xl font-bold">
                             Catch the Latest{" "}
                             <span
                                 key={index}
@@ -62,7 +62,7 @@ export default function Home() {
                             </span>{" "}
                             Around Campus
                         </h1>
-                        <h4 className="text-3xl">
+                        <h4 className="text-2xl sm:text-3xl">
                             Discover, RSVP, and manage campus events all in one
                             place.
                         </h4>
@@ -123,7 +123,7 @@ export default function Home() {
             </div>
 
             {/* CTA Section */}
-            <div className="bg-secondary/10 text-center py-16 px-5">
+            <div className="bg-secondary/10 text-center py-10 sm:py-16 px-8">
                 <h2 className="text-4xl font-semibold mb-4 underline decoration-tertiary underline-offset-4">
                     Ready to get started?
                 </h2>

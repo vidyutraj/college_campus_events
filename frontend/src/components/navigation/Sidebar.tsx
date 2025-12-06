@@ -117,7 +117,7 @@ export default function Sidebar({ sbCollapsed }: SidebarProps) {
                         {memberOrgs.map((org) => (
                             <Link
                                 key={org.name}
-                                to={"/organization/" + org.name}
+                                to={"/organization/" + org.slug}
                                 className={`flex items-center gap-3 text-lg rounded hover:bg-foreground/5
                                             ${
                                                 org.name == location.pathname
@@ -128,7 +128,7 @@ export default function Sidebar({ sbCollapsed }: SidebarProps) {
                                 }`}
                             >
                                 <img
-                                    src={PlaceholderImg}
+                                    src={org.logo ?? PlaceholderImg}
                                     className="rounded-full w-7 aspect-square object-cover object-center
                                                border border-foreground/10"
                                 />

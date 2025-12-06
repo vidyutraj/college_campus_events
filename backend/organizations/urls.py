@@ -7,5 +7,6 @@ router.register(r'organizations', views.OrganizationViewSet, basename='organizat
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('organizations/<str:pk>/', views.OrganizationViewSet.as_view({'get': 'retrieve'}), name='organization-detail-by-slug'),
 ]
 

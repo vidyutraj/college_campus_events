@@ -53,7 +53,7 @@ export default function Navbar() {
                         <>
                             <Link
                                 to="/events"
-                                className="font-medium rounded-full btn-secondary
+                                className="hidden md:block font-medium rounded-full btn-secondary
                                            border border-secondary hover:border-secondary-dark
                                            px-4 py-1"
                             >

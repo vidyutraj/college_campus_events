@@ -4,6 +4,7 @@ from django.db import models
 class Organization(models.Model):
     """Student organization/club"""
     name = models.CharField(max_length=255, unique=True)
+    slug = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True)
     website = models.URLField(blank=True)
     email = models.EmailField(blank=True)

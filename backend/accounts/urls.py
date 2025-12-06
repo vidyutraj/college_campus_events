@@ -11,5 +11,6 @@ urlpatterns = [
     path('auth/login/', views.user_login, name='user-login'),
     path('auth/logout/', views.user_logout, name='user-logout'),
     path('auth/check/', views.check_auth, name='check-auth'),
+    path('profiles/<str:pk>/', views.StudentProfileViewSet.as_view({'get': 'retrieve'}), name='studentprofile-detail-by-username'),
 ]
 

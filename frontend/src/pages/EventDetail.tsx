@@ -207,175 +207,180 @@ export default function EventDetail() {
                 </div>
             )}
 
-            {user?.is_staff || boardMemberOrgs.some(org => org.name === event.host_organization?.name) && (
-                <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-xs mb-6">
-                    <div className="flex items-center justify-between flex-wrap gap-3">
-                        <div className="text-gray-700 font-medium">
-                            Event Admin Controls
-                        </div>
-                        <div className="flex items-center gap-3">
-                            {!editing ? (
-                                <button
-                                    onClick={handleEditToggle}
-                                    className="px-4 py-2 rounded bg-gray-100 hover:bg-gray-200"
-                                >
-                                    Edit
-                                </button>
-                            ) : (
-                                <>
-                                    <button
-                                        onClick={handleSave}
-                                        disabled={saving}
-                                        className="px-4 py-2 rounded btn-primary"
-                                    >
-                                        {saving ? "Saving..." : "Save"}
-                                    </button>
+            {user?.is_staff ||
+                (boardMemberOrgs.some(
+                    (org) => org.name === event.host_organization?.name
+                ) && (
+                    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-xs mb-6">
+                        <div className="flex items-center justify-between flex-wrap gap-3">
+                            <div className="text-gray-700 font-medium">
+                                Event Admin Controls
+                            </div>
+                            <div className="flex items-center gap-3">
+                                {!editing ? (
                                     <button
                                         onClick={handleEditToggle}
-                                        disabled={saving}
-                                        className="px-4 py-2 rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+                                        className="px-4 py-2 rounded bg-gray-100 hover:bg-gray-200"
                                     >
-                                        Cancel
+                                        Edit
                                     </button>
-                                </>
-                            )}
+                                ) : (
+                                    <>
+                                        <button
+                                            onClick={handleSave}
+                                            disabled={saving}
+                                            className="px-4 py-2 rounded btn-primary"
+                                        >
+                                            {saving ? "Saving..." : "Save"}
+                                        </button>
+                                        <button
+                                            onClick={handleEditToggle}
+                                            disabled={saving}
+                                            className="px-4 py-2 rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </>
+                                )}
+                            </div>
                         </div>
-                    </div>
 
-                    {editing && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                            <div>
-                                <label className="block text-sm text-gray-700 mb-1">
-                                    Title
-                                </label>
-                                <input
-                                    value={form.title || ""}
-                                    onChange={(e) =>
-                                        handleFieldChange(
-                                            "title",
-                                            e.target.value
-                                        )
-                                    }
-                                    className="w-full border border-gray-300 rounded px-3 py-2"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm text-gray-700 mb-1">
-                                    Location
-                                </label>
-                                <input
-                                    value={form.location || ""}
-                                    onChange={(e) =>
-                                        handleFieldChange(
-                                            "location",
-                                            e.target.value
-                                        )
-                                    }
-                                    className="w-full border border-gray-300 rounded px-3 py-2"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm text-gray-700 mb-1">
-                                    Room
-                                </label>
-                                <input
-                                    value={form.room || ""}
-                                    onChange={(e) =>
-                                        handleFieldChange(
-                                            "room",
-                                            e.target.value
-                                        )
-                                    }
-                                    className="w-full border border-gray-300 rounded px-3 py-2"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm text-gray-700 mb-1">
-                                    Modality
-                                </label>
-                                <select
-                                    value={form.modality || "in-person"}
-                                    onChange={(e) =>
-                                        handleFieldChange(
-                                            "modality",
-                                            e.target.value
-                                        )
-                                    }
-                                    className="w-full border border-gray-300 rounded px-3 py-2"
-                                >
-                                    <option value="in-person">In-Person</option>
-                                    <option value="online">Online</option>
-                                    <option value="hybrid">Hybrid</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-sm text-gray-700 mb-1">
-                                    Start
-                                </label>
-                                <input
-                                    type="datetime-local"
-                                    value={
-                                        form.start_datetime
-                                            ? new Date(form.start_datetime)
-                                                  .toISOString()
-                                                  .slice(0, 16)
-                                            : ""
-                                    }
-                                    onChange={(e) =>
-                                        handleFieldChange(
-                                            "start_datetime",
-                                            new Date(
+                        {editing && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                <div>
+                                    <label className="block text-sm text-gray-700 mb-1">
+                                        Title
+                                    </label>
+                                    <input
+                                        value={form.title || ""}
+                                        onChange={(e) =>
+                                            handleFieldChange(
+                                                "title",
                                                 e.target.value
-                                            ).toISOString()
-                                        )
-                                    }
-                                    className="w-full border border-gray-300 rounded px-3 py-2"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm text-gray-700 mb-1">
-                                    End
-                                </label>
-                                <input
-                                    type="datetime-local"
-                                    value={
-                                        form.end_datetime
-                                            ? new Date(form.end_datetime)
-                                                  .toISOString()
-                                                  .slice(0, 16)
-                                            : ""
-                                    }
-                                    onChange={(e) =>
-                                        handleFieldChange(
-                                            "end_datetime",
-                                            new Date(
+                                            )
+                                        }
+                                        className="w-full border border-gray-300 rounded px-3 py-2"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm text-gray-700 mb-1">
+                                        Location
+                                    </label>
+                                    <input
+                                        value={form.location || ""}
+                                        onChange={(e) =>
+                                            handleFieldChange(
+                                                "location",
                                                 e.target.value
-                                            ).toISOString()
-                                        )
-                                    }
-                                    className="w-full border border-gray-300 rounded px-3 py-2"
-                                />
+                                            )
+                                        }
+                                        className="w-full border border-gray-300 rounded px-3 py-2"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm text-gray-700 mb-1">
+                                        Room
+                                    </label>
+                                    <input
+                                        value={form.room || ""}
+                                        onChange={(e) =>
+                                            handleFieldChange(
+                                                "room",
+                                                e.target.value
+                                            )
+                                        }
+                                        className="w-full border border-gray-300 rounded px-3 py-2"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm text-gray-700 mb-1">
+                                        Modality
+                                    </label>
+                                    <select
+                                        value={form.modality || "in-person"}
+                                        onChange={(e) =>
+                                            handleFieldChange(
+                                                "modality",
+                                                e.target.value
+                                            )
+                                        }
+                                        className="w-full border border-gray-300 rounded px-3 py-2"
+                                    >
+                                        <option value="in-person">
+                                            In-Person
+                                        </option>
+                                        <option value="online">Online</option>
+                                        <option value="hybrid">Hybrid</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm text-gray-700 mb-1">
+                                        Start
+                                    </label>
+                                    <input
+                                        type="datetime-local"
+                                        value={
+                                            form.start_datetime
+                                                ? new Date(form.start_datetime)
+                                                      .toISOString()
+                                                      .slice(0, 16)
+                                                : ""
+                                        }
+                                        onChange={(e) =>
+                                            handleFieldChange(
+                                                "start_datetime",
+                                                new Date(
+                                                    e.target.value
+                                                ).toISOString()
+                                            )
+                                        }
+                                        className="w-full border border-gray-300 rounded px-3 py-2"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm text-gray-700 mb-1">
+                                        End
+                                    </label>
+                                    <input
+                                        type="datetime-local"
+                                        value={
+                                            form.end_datetime
+                                                ? new Date(form.end_datetime)
+                                                      .toISOString()
+                                                      .slice(0, 16)
+                                                : ""
+                                        }
+                                        onChange={(e) =>
+                                            handleFieldChange(
+                                                "end_datetime",
+                                                new Date(
+                                                    e.target.value
+                                                ).toISOString()
+                                            )
+                                        }
+                                        className="w-full border border-gray-300 rounded px-3 py-2"
+                                    />
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm text-gray-700 mb-1">
+                                        Description
+                                    </label>
+                                    <textarea
+                                        value={form.description || ""}
+                                        onChange={(e) =>
+                                            handleFieldChange(
+                                                "description",
+                                                e.target.value
+                                            )
+                                        }
+                                        className="w-full border border-gray-300 rounded px-3 py-2"
+                                        rows={5}
+                                    />
+                                </div>
                             </div>
-                            <div className="md:col-span-2">
-                                <label className="block text-sm text-gray-700 mb-1">
-                                    Description
-                                </label>
-                                <textarea
-                                    value={form.description || ""}
-                                    onChange={(e) =>
-                                        handleFieldChange(
-                                            "description",
-                                            e.target.value
-                                        )
-                                    }
-                                    className="w-full border border-gray-300 rounded px-3 py-2"
-                                    rows={5}
-                                />
-                            </div>
-                        </div>
-                    )}
-                </div>
-            )}
+                        )}
+                    </div>
+                ))}
 
             <div className="mb-6">
                 <div className="flex items-start justify-between flex-wrap gap-4">
@@ -450,9 +455,17 @@ export default function EventDetail() {
                                     <span className="block text-sm font-medium text-gray-500 mb-1">
                                         🏢 Host Organization
                                     </span>
-                                    <div className="text-gray-800">
-                                        {event.host_organization.name}
-                                    </div>
+                                    <Link
+                                        to={
+                                            "/organization/" +
+                                            event.host_organization.slug
+                                        }
+                                        className="text-primary hover:text-primary-dark"
+                                    >
+                                        <div className="text-gray-800">
+                                            {event.host_organization.name}
+                                        </div>
+                                    </Link>
                                 </div>
                             )}
 

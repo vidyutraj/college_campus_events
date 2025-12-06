@@ -1,26 +1,25 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import type { ReactNode } from "react";
 import axiosInstance from "../utils/axiosConfig";
-import type { Organization, User } from "../types";
+import type { Organization, User, UserProfile } from "../types";
 
 interface AuthContextType {
     user: User | null;
+    userProfile: UserProfile | null;
     loading: boolean;
-    login: (userData: User, organizationsData?: OrganizationsType) => void;
+    login: (userData: User, organizationsData: OrganizationsType, profile: UserProfile) => void;
     logout: () => Promise<void>;
     checkAuth: () => Promise<void>;
     isAuthenticated: boolean;
     leadOrgs: Organization[];
     boardMemberOrgs: Organization[];
     memberOrgs: Organization[];
-    unverifiedOrgs: Organization[];
 }
 
 interface OrganizationsType {
     leader: Organization[];
     board_member: Organization[];
     member: Organization[];
-    unverified: Organization[];
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -31,10 +30,10 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
     const [user, setUser] = useState<User | null>(null);
+    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const [leadOrgs, setLeadOrgs] = useState<Organization[]>([]);
     const [boardMemberOrgs, setBoardMemberOrgs] = useState<Organization[]>([]);
     const [memberOrgs, setMemberOrgs] = useState<Organization[]>([]);
-    const [unverifiedOrgs, setUnverifiedOrgs] = useState<Organization[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -49,33 +48,37 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
             if (userResponse.data.is_authenticated) {
                 setUser(userResponse.data.user);
+                setUserProfile(userResponse.data.profile);
                 setLeadOrgs(userResponse.data.organizations.leader);
                 setBoardMemberOrgs(
                     userResponse.data.organizations.board_member
                 );
                 setMemberOrgs(userResponse.data.organizations.member);
-                setUnverifiedOrgs(userResponse.data.organizations.unverified);
             } else {
                 setUser(null);
+                setUserProfile(null);
                 setLeadOrgs([]);
                 setBoardMemberOrgs([]);
                 setMemberOrgs([]);
-                setUnverifiedOrgs([]);
             }
         } catch (err) {
             console.error("Error checking auth:", err);
             setUser(null);
+            setUserProfile(null);
+            setLeadOrgs([]);
+            setBoardMemberOrgs([]);
+            setMemberOrgs([]);
         } finally {
             setLoading(false);
         }
     };
 
-    const login = (userData: User, organizations?: OrganizationsType) => {
+    const login = (userData: User, organizations: OrganizationsType, profile: UserProfile) => {
         setUser(userData);
+        setUserProfile(profile);
         setLeadOrgs(organizations?.leader ?? []);
         setBoardMemberOrgs(organizations?.board_member ?? []);
         setMemberOrgs(organizations?.member ?? []);
-        setUnverifiedOrgs(organizations?.unverified ?? []);
     };
 
     const logout = async () => {
@@ -85,11 +88,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
             console.error("Error logging out:", err);
         } finally {
             setUser(null);
+            setUserProfile(null);
+            setLeadOrgs([]);
+            setBoardMemberOrgs([]);
+            setMemberOrgs([]);
         }
     };
 
     const value: AuthContextType = {
         user,
+        userProfile,
         loading,
         login,
         logout,
@@ -98,7 +106,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         leadOrgs: leadOrgs,
         boardMemberOrgs: boardMemberOrgs,
         memberOrgs: memberOrgs,
-        unverifiedOrgs: unverifiedOrgs,
     };
 
     return (

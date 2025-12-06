@@ -11,6 +11,8 @@ import AdminEventRequests from "./pages/AdminEventRequests";
 import MainLayout from "./components/layouts/MainLayout";
 import DashboardLayout from "./components/layouts/DashboardLayout";
 import AdminEvents from "./pages/AdminEvents";
+import UserProfile from "./pages/UserProfile";
+import OrganizationPage from "./pages/Organization";
 
 function App() {
     return (
@@ -47,6 +49,14 @@ function App() {
                             <Route
                                 path="/organizations/create"
                                 element={<RegisterOrganization />}
+                            />
+                            <Route
+                                path="/user/:username"
+                                element={<UserProfile />}
+                            />
+                            <Route
+                                path="/organization/:org"
+                                element={<OrganizationPage />}
                             />
                         </Route>
                     </Routes>

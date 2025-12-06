@@ -11,7 +11,7 @@ class OrganizationAdmin(admin.ModelAdmin):
     list_editable = ['is_verified']  # Allow quick editing from list view
     fieldsets = (
         ('Organization Information', {
-            'fields': ('name', 'description', 'created_by')
+            'fields': ('name', 'slug', 'description', 'created_by', 'website', 'email', 'instagram', 'linkedin', 'slack', 'discord', 'logo')
         }),
         ('Verification Status', {
             'fields': ('is_verified', 'created_at', 'updated_at')

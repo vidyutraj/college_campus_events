@@ -9,10 +9,10 @@ class EventCategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description']
 
 
-class OrganizationSerializer(serializers.ModelSerializer):
+class MinimalOrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
-        fields = ['id', 'name', 'description']
+        fields = ['id', 'name', 'slug', 'description']
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -24,7 +24,7 @@ class EventSerializer(serializers.ModelSerializer):
         required=False,
         allow_null=True
     )
-    host_organization = OrganizationSerializer(read_only=True)
+    host_organization = MinimalOrganizationSerializer(read_only=True)
     host_organization_id = serializers.PrimaryKeyRelatedField(
         queryset=Organization.objects.all(),
         source='host_organization',
@@ -60,10 +60,10 @@ class EventSerializer(serializers.ModelSerializer):
 
 class RSVPSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
-    event_title = serializers.CharField(source='event.title', read_only=True)
+    event = EventSerializer(read_only=True)
 
     class Meta:
         model = RSVP
-        fields = ['id', 'event', 'event_title', 'user', 'rsvp_at', 'attended']
+        fields = ['id', 'event', 'user', 'rsvp_at', 'attended']
         read_only_fields = ['user', 'rsvp_at']
 

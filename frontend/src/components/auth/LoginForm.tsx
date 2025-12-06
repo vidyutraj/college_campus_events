@@ -38,7 +38,8 @@ export default function LoginForm() {
 
             authLogin(
                 response.data.user,
-                response.data.organizations
+                response.data.organizations,
+                response.data.profile
             );
 
             navigate("/events");

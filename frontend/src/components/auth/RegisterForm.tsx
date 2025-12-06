@@ -59,7 +59,9 @@ export default function RegisterForm() {
                 "/api/auth/register/",
                 formData
             );
-            authLogin(response.data.user);
+            authLogin(response.data.user,
+                response.data.organizations,
+                response.data.profile);
             navigate("/events");
         } catch (err: unknown) {
             if (isAxiosError(err) && err.response?.data) {

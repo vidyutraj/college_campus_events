@@ -2,19 +2,36 @@ export interface User {
   id: number;
   username: string;
   email: string;
-  first_name?: string;
-  last_name?: string;
+  first_name: string;
+  last_name: string;
   is_staff: boolean;
 }
 
 export interface Organization {
   id: number;
   name: string;
-  description?: string;
+  slug: string;
+  logo: string;
+  description: string;
+  email: string;
+  website: string;
+  discord: string;
+  instagram: string;
+  linkedin: string;
+  slack: string;
+  events: Event[];
+  members_count: number;
   created_at: string;
-  created_by: string;
+  created_by: number;
   is_verified: boolean;
   updated_at: string;
+}
+
+export interface MinimalOrganization {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
 }
 
 export interface Category {
@@ -36,7 +53,7 @@ export interface Event {
   modality: 'in-person' | 'online' | 'hybrid';
   category?: Category | null;
   subcategory?: string | null;
-  host_organization?: Organization | null;
+  host_organization?: MinimalOrganization | null;
   host_user?: string | null;
   has_free_food: boolean;
   has_free_swag: boolean;
@@ -48,4 +65,34 @@ export interface Event {
   is_approved?: boolean;
   created_at?: string;
   updated_at?: string;
+}
+
+export interface RSVP {
+  id: number;
+  attended: boolean;
+  event: Event;
+  rsvp_at: string;
+  user: string;
+}
+
+export interface OrganizationMember {
+  id: number;
+  is_board_member: boolean;
+  is_leader: boolean;
+  joined_at: string;
+  organization: Organization;
+  role: string;
+  user: string;
+}
+
+export interface UserProfile {
+    id: number;
+    user: User;
+    description: string;
+    profile_picture: string | null;
+    pronouns: string;
+    rsvps: RSVP[];
+    organizations_board_member: OrganizationMember[];
+    created_at: string;
+    updated_at: string;
 }

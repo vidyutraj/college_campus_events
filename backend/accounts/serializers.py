@@ -2,6 +2,9 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from .models import StudentProfile
+from organizations.models import OrganizationMember
+from organizations.serializers import OrganizationMemberSerializer
+from events.serializers import RSVPSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -13,11 +16,17 @@ class UserSerializer(serializers.ModelSerializer):
 
 class StudentProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    
+    rsvps = RSVPSerializer(many=True, read_only=True, source='user.rsvps')
+    organizations_board_member = serializers.SerializerMethodField()
+
     class Meta:
         model = StudentProfile
-        fields = ['id', 'user', 'description', 'profile_picture', 'pronouns', 'created_at', 'updated_at']
+        fields = ['id', 'user', 'description', 'profile_picture', 'pronouns', 'created_at', 'updated_at', 'rsvps', 'organizations_board_member']
         read_only_fields = ['id', 'created_at', 'updated_at']
+
+    def get_organizations_board_member(self, obj):
+        board_memberships = OrganizationMember.objects.filter(user=obj.user, is_board_member=True)
+        return OrganizationMemberSerializer(board_memberships, many=True).data
 
 
 class StudentRegistrationSerializer(serializers.ModelSerializer):
