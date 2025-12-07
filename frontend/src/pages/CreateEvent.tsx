@@ -200,10 +200,12 @@ export default function CreateEvent() {
                         name="hostOrganizationId" // Use the new state field
                         value={formData.hostOrganizationId}
                         onChange={handleChange}
-                        options={authOrganization.map((org) => ({
-                            value: org.id.toString(), // Ensure value is string for select
-                            label: org.name,
-                        }))}
+                        options={authOrganization
+                            .filter((org) => org.is_verified)
+                            .map((org) => ({
+                                value: org.id.toString(), // Ensure value is string for select
+                                label: org.name,
+                            }))}
                         required
                     />
                 )}
