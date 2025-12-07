@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Event, EventCategory, RSVP
 from organizations.models import Organization
+from django.contrib.auth.models import User
 
 
 class EventCategorySerializer(serializers.ModelSerializer):
@@ -9,10 +10,16 @@ class EventCategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description']
 
 
+class MinimalUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'username', 'email', 'is_staff']
+
+
 class MinimalOrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
-        fields = ['id', 'name', 'slug', 'description']
+        fields = ['id', 'name', 'slug', 'description', 'logo', 'is_verified']
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -33,7 +40,9 @@ class EventSerializer(serializers.ModelSerializer):
         allow_null=True
     )
     host_user = serializers.StringRelatedField(read_only=True)
-    rsvp_count = serializers.SerializerMethodField()
+    
+    # Changed field
+    rsvp_users = serializers.SerializerMethodField()
     user_has_rsvp = serializers.SerializerMethodField()
 
     class Meta:
@@ -44,12 +53,15 @@ class EventSerializer(serializers.ModelSerializer):
             'has_free_swag', 'other_perks', 'category', 'category_id',
             'subcategory', 'host_organization', 'host_organization_id',
             'host_user', 'employers_in_attendance', 'status', 'is_approved',
-            'created_at', 'updated_at', 'rsvp_count', 'user_has_rsvp'
+            'created_at', 'updated_at', 'rsvp_users', 'user_has_rsvp'
         ]
         read_only_fields = ['created_at', 'updated_at', 'host_user']
 
-    def get_rsvp_count(self, obj):
-        return obj.rsvps.count()
+    def get_rsvp_users(self, obj):
+        """
+        Return a list of usernames of users who have RSVPed for this event.
+        """
+        return [MinimalUserSerializer(rsvp.user).data for rsvp in obj.rsvps.all()]
 
     def get_user_has_rsvp(self, obj):
         request = self.context.get('request')

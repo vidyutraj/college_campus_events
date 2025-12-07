@@ -13,6 +13,8 @@ import DashboardLayout from "./components/layouts/DashboardLayout";
 import AdminEvents from "./pages/AdminEvents";
 import UserProfile from "./pages/UserProfile";
 import OrganizationPage from "./pages/Organization";
+import Organizations from "./pages/Organizations";
+import EventsMap from "./pages/EventsMap";
 
 function App() {
     return (
@@ -30,6 +32,15 @@ function App() {
                         </Route>
                         <Route element={<DashboardLayout />}>
                             <Route path="/events" element={<Events />} />
+                            <Route
+                                path="/my-upcoming-events"
+                                element={<Events myEventsOnly={true} />}
+                            />
+                            <Route
+                                path="/organizations"
+                                element={<Organizations />}
+                            />
+                            <Route path="/event-map" element={<EventsMap />} />
                             <Route
                                 path="/events/:id"
                                 element={<EventDetail />}

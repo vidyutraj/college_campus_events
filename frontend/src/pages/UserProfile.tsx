@@ -1,15 +1,20 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../utils/axiosConfig";
-import EventCard from "../components/events/EventCard";
+import EventCard from "../components/cards/EventCard";
 import type { UserProfile } from "../types";
 import { LuMail } from "react-icons/lu";
+import OrganizationCard from "../components/cards/OrganizationCard";
+import EditProfileModal from "../components/modals/EditProfileModal";
+import { useAuth } from "../context/AuthContext";
 
 export default function UserProfile() {
+    const { user } = useAuth();
     const { username } = useParams<{ username: string }>();
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [editing, setEditing] = useState(false);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -77,24 +82,34 @@ export default function UserProfile() {
                         {profile.pronouns && (
                             <>
                                 <p>{profile.pronouns}</p>
-                                <span className="hidden sm:inline text-foreground/20">|</span>
+                                <span className="hidden sm:inline text-foreground/20">
+                                    |
+                                </span>
                             </>
                         )}
                         <p>Joined {formatDate(profile.created_at)}</p>
                     </div>
                 </div>
-                <div>
+                <div className="flex gap-4 justify-center items-center">
                     <a href={`mailto:${profile.user.email}`}>
                         <button
-                            className="m-auto border border-foreground/20 py-2 px-4 rounded-lg flex items-center gap-2
-                                               cursor-pointer hover:bg-foreground/5 transition-all"
+                            className="border border-foreground/20 py-2 px-4 rounded-lg flex items-center gap-2
+                                       cursor-pointer hover:bg-foreground/5 transition-all"
                         >
                             <LuMail /> Email
                         </button>
                     </a>
+                    {profile.user.username === user?.username && (
+                        <button
+                            onClick={() => setEditing(true)}
+                            className="btn-outline-primary px-4 py-2 rounded-lg"
+                        >
+                            Edit Profile
+                        </button>
+                    )}
                 </div>
                 {profile.description && (
-                    <div>
+                    <div className="whitespace-pre-line max-w-2xl m-auto">
                         <p>{profile.description}</p>
                     </div>
                 )}
@@ -124,19 +139,30 @@ export default function UserProfile() {
                     Organizations I Lead
                 </h2>
                 {profile.organizations_board_member.length > 0 ? (
-                    <ul className="list-disc list-inside">
-                        {profile.organizations_board_member.map(
-                            (org, index) => (
-                                <li key={index}>
-                                    {org.organization.name} - {org.role}
-                                </li>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {profile.organizations_board_member
+                            .filter(
+                                (org) => org.organization.is_verified == true
                             )
-                        )}
-                    </ul>
+                            .map((org) => (
+                                <OrganizationCard
+                                    key={org.id}
+                                    org={org.organization}
+                                />
+                            ))}
+                    </div>
                 ) : (
                     <p>Not a board member of any organizations.</p>
                 )}
             </div>
+            {editing && username && (
+                <EditProfileModal
+                    username={username}
+                    profile={profile}
+                    setProfile={setProfile}
+                    setEditing={setEditing}
+                />
+            )}
         </div>
     );
 }

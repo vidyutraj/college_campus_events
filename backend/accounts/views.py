@@ -2,7 +2,7 @@ from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.contrib.auth import login, logout
-from django.contrib.auth.models import User
+from rest_framework.permissions import IsAuthenticated
 
 from .models import StudentProfile
 from .serializers import (
@@ -82,3 +82,40 @@ def check_auth(request):
         })
 
     return Response({'is_authenticated': False})
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def edit_profile(request, username):
+    # Ensure the user is editing their own profile
+    if request.user.username != username:
+        return Response({'detail': 'You do not have permission to edit this profile.'},
+                        status=status.HTTP_403_FORBIDDEN)
+    
+    try:
+        profile = StudentProfile.objects.get(user__username=username)
+    except StudentProfile.DoesNotExist:
+        return Response({'detail': 'Profile not found.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    # Update User fields if provided
+    user = profile.user
+    user_fields = ['username', 'first_name', 'last_name']
+    for field in user_fields:
+        if field in request.data:
+            setattr(user, field, request.data[field])
+    user.save()
+    
+    # Update profile fields if provided
+    profile_fields = ['description', 'pronouns', 'profile_picture']
+    for field in profile_fields:
+        if field in request.data:
+            setattr(profile, field, request.data[field])
+    profile.save()
+    
+    # Serialize and return the updated profile
+    serialized_profile = StudentProfileSerializer(profile, context={'request': request})
+    serialized_user = UserSerializer(user)
+    return Response({
+        'message': 'Profile updated successfully.',
+        'user': serialized_user.data,
+        'profile': serialized_profile.data
+    })

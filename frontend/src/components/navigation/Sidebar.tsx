@@ -5,6 +5,7 @@ import {
     LuCalendar,
     LuCalendarClock,
     LuCalendarRange,
+    LuClock,
     LuMap,
     LuPlus,
 } from "react-icons/lu";
@@ -79,30 +80,34 @@ export default function Sidebar({ sbCollapsed }: SidebarProps) {
                     ))}
                 </div>
             </div>
-            {isAuthenticated && <div>
-                {!sbCollapsed && (
-                    <h3 className="text-sm uppercase text-foreground/50 font-semibold mb-2">
-                        My Events
-                    </h3>
-                )}
-                {sbCollapsed && <hr className="mb-5 border-foreground/15" />}
-                <div className="space-y-1">
-                    {myEventsNavItems.map((nav) => (
-                        <Link
-                            key={nav.href}
-                            to={nav.href}
-                            className={`flex items-center gap-2 text-lg rounded py-2 hover:bg-foreground/5
+            {isAuthenticated && (
+                <div>
+                    {!sbCollapsed && (
+                        <h3 className="text-sm uppercase text-foreground/50 font-semibold mb-2">
+                            My Events
+                        </h3>
+                    )}
+                    {sbCollapsed && (
+                        <hr className="mb-5 border-foreground/15" />
+                    )}
+                    <div className="space-y-1">
+                        {myEventsNavItems.map((nav) => (
+                            <Link
+                                key={nav.href}
+                                to={nav.href}
+                                className={`flex items-center gap-2 text-lg rounded py-2 hover:bg-foreground/5
                         ${
                             nav.href == location.pathname
                                 ? "bg-foreground/5 font-semibold"
                                 : ""
                         } ${sbCollapsed ? "px-2" : "px-3"}`}
-                        >
-                            <nav.icon /> {!sbCollapsed && nav.name}
-                        </Link>
-                    ))}
+                            >
+                                <nav.icon /> {!sbCollapsed && nav.name}
+                            </Link>
+                        ))}
+                    </div>
                 </div>
-            </div>}
+            )}
             {memberOrgs.length > 0 && (
                 <div>
                     {!sbCollapsed && (
@@ -116,6 +121,9 @@ export default function Sidebar({ sbCollapsed }: SidebarProps) {
                     <div className="space-y-1">
                         {memberOrgs.map((org) => (
                             <Link
+                                title={
+                                    org.is_verified ? "" : "Pending Approval"
+                                }
                                 key={org.name}
                                 to={"/organization/" + org.slug}
                                 className={`flex items-center gap-3 text-lg rounded hover:bg-foreground/5
@@ -125,95 +133,131 @@ export default function Sidebar({ sbCollapsed }: SidebarProps) {
                                                     : ""
                                             } ${
                                     sbCollapsed ? "p-1.5" : "py-2 pl-2 pr-4"
+                                } ${
+                                    org.is_verified
+                                        ? ""
+                                        : "border border-dashed border-foreground/20 opacity-85"
                                 }`}
                             >
-                                <img
-                                    src={org.logo ?? PlaceholderImg}
-                                    className="rounded-full w-7 aspect-square object-cover object-center
+                                <div
+                                    className="rounded-full w-7 h-7
                                                border border-foreground/10"
-                                />
+                                >
+                                    {org.logo ? (
+                                        <img
+                                            src={org.logo ?? PlaceholderImg}
+                                            className="rounded-full w-full h-full object-cover object-center"
+                                        />
+                                    ) : (
+                                        <p className="rounded-full w-full h-full bg-primary text-white flex items-center justify-center text-sm">
+                                            {org.name[0].toUpperCase()}
+                                        </p>
+                                    )}
+                                </div>
+
                                 {!sbCollapsed && org.name}
+                                {!sbCollapsed && !org.is_verified && (
+                                    <LuClock className="opacity-80" />
+                                )}
                             </Link>
                         ))}
                     </div>
                 </div>
             )}
-            
-            {user?.is_staff && <div>
-                {!sbCollapsed && (
-                    <h3 className="text-sm uppercase text-foreground/50 font-semibold mb-2">
-                        Admin
-                    </h3>
-                )}
-                {sbCollapsed && <hr className="mb-5 border-foreground/15" />}
-                <div className="space-y-1">
-                    {adminNavItems.map((nav) => (
-                        <Link
-                            key={nav.href}
-                            to={nav.href}
-                            className={`flex items-center gap-2 text-lg rounded py-2 hover:bg-foreground/5
+
+            {user?.is_staff && (
+                <div>
+                    {!sbCollapsed && (
+                        <h3 className="text-sm uppercase text-foreground/50 font-semibold mb-2">
+                            Admin
+                        </h3>
+                    )}
+                    {sbCollapsed && (
+                        <hr className="mb-5 border-foreground/15" />
+                    )}
+                    <div className="space-y-1">
+                        {adminNavItems.map((nav) => (
+                            <Link
+                                key={nav.href}
+                                to={nav.href}
+                                className={`flex items-center gap-2 text-lg rounded py-2 hover:bg-foreground/5
                         ${
                             nav.href == location.pathname
                                 ? "bg-foreground/5 font-semibold"
                                 : ""
                         } ${sbCollapsed ? "px-2" : "px-3"}`}
-                        >
-                            <nav.icon /> {!sbCollapsed && nav.name}
-                        </Link>
-                    ))}
-                </div>
-            </div>}
-            {isAuthenticated && <div className="mt-auto flex flex-col gap-2 text-sm">
-                <hr className="mb-3 border-foreground/15" />
-                {!sbCollapsed ? (
-                    <>
-                        <Link to="/organizations/create">
-                            <button className="w-full btn-primary
-                                               rounded px-4 py-2 font-medium">
-                                + New Organization
-                            </button>
-                        </Link>
-                        {boardMemberOrgs.length > 0 && <Link to="/events/create">
-                            <button className="w-full btn-secondary
-                                               rounded px-4 py-2 font-medium">
-                                + New Event
-                            </button>
-                        </Link>}
-                    </>
-                ) : (
-                    <div className="group">
-                        <button
-                            className="cursor-pointer text-2xl border border-foreground/15
-                                           border-dashed rounded p-1 hover:bg-foreground/5"
-                        >
-                            <LuPlus />
-                        </button>
-                        <div
-                            className="transition-all overflow-hidden fixed bottom-4 left-10 pl-10
-                                        opacity-0 w-0 h-0
-                                        group-hover:opacity-100 group-hover:h-[98px] group-hover:w-70"
-                        >
-                            <div
-                                className="flex flex-col gap-2 w-60 border border-dashed rounded border-foreground/15 shadow
-                                      bg-white p-2 text-sm"
                             >
-                                <Link to="/organizations/create">
-                                <button className="w-full btn-primary
-                                                   rounded px-4 py-2 font-medium">
+                                <nav.icon /> {!sbCollapsed && nav.name}
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            )}
+            {isAuthenticated && (
+                <div className="mt-auto flex flex-col gap-2 text-sm">
+                    <hr className="mb-3 border-foreground/15" />
+                    {!sbCollapsed ? (
+                        <>
+                            <Link to="/organizations/create">
+                                <button
+                                    className="w-full btn-primary
+                                               rounded px-4 py-2 font-medium"
+                                >
                                     + New Organization
                                 </button>
-                                </Link>
+                            </Link>
+                            {boardMemberOrgs.length > 0 && (
                                 <Link to="/events/create">
-                                {boardMemberOrgs.length > 0 && <button className="w-full btn-secondary
-                                                   rounded px-4 py-2 font-medium">
-                                    + New Event
-                                </button>}
+                                    <button
+                                        className="w-full btn-secondary
+                                               rounded px-4 py-2 font-medium"
+                                    >
+                                        + New Event
+                                    </button>
                                 </Link>
+                            )}
+                        </>
+                    ) : (
+                        <div className="group">
+                            <button
+                                className="cursor-pointer text-2xl border border-foreground/15
+                                           border-dashed rounded p-1 hover:bg-foreground/5"
+                            >
+                                <LuPlus />
+                            </button>
+                            <div
+                                className="transition-all overflow-hidden fixed bottom-4 left-10 pl-10
+                                        opacity-0 w-0 h-0
+                                        group-hover:opacity-100 group-hover:h-[98px] group-hover:w-70"
+                            >
+                                <div
+                                    className="flex flex-col gap-2 w-60 border border-dashed rounded border-foreground/15 shadow
+                                      bg-white p-2 text-sm"
+                                >
+                                    <Link to="/organizations/create">
+                                        <button
+                                            className="w-full btn-primary
+                                                   rounded px-4 py-2 font-medium"
+                                        >
+                                            + New Organization
+                                        </button>
+                                    </Link>
+                                    <Link to="/events/create">
+                                        {boardMemberOrgs.length > 0 && (
+                                            <button
+                                                className="w-full btn-secondary
+                                                   rounded px-4 py-2 font-medium"
+                                            >
+                                                + New Event
+                                            </button>
+                                        )}
+                                    </Link>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
-            </div>}
+                    )}
+                </div>
+            )}
         </div>
     );
 }

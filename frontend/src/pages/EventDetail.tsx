@@ -4,6 +4,8 @@ import axiosInstance from "../utils/axiosConfig";
 import type { Event } from "../types";
 import { AxiosError } from "axios";
 import { useAuth } from "../context/AuthContext";
+import { LuCalendar, LuClipboardList, LuFolder, LuPencil } from "react-icons/lu";
+import EventRSVPList from "../components/modals/EventRSVPList";
 
 export default function EventDetail() {
     const { id } = useParams<{ id: string }>();
@@ -18,6 +20,7 @@ export default function EventDetail() {
     const [editing, setEditing] = useState(false);
     const [saving, setSaving] = useState(false);
     const [form, setForm] = useState<Partial<Event>>({});
+    const [showRSVPList, setShowRSVPList] = useState(false);
 
     const fetchEvent = async () => {
         try {
@@ -157,6 +160,68 @@ export default function EventDetail() {
         }
     };
 
+    // GOOGLE CALENDAR URL
+    const getGoogleCalendarUrl = () => {
+        if (!event) return "#";
+
+        const start =
+            new Date(event.start_datetime)
+                .toISOString()
+                .replace(/[-:]/g, "")
+                .split(".")[0] + "Z";
+
+        const end = event.end_datetime
+            ? new Date(event.end_datetime)
+                  .toISOString()
+                  .replace(/[-:]/g, "")
+                  .split(".")[0] + "Z"
+            : "";
+
+        const title = encodeURIComponent(event.title || "");
+        const details = encodeURIComponent(event.description || "");
+        const location = encodeURIComponent(event.location || "");
+
+        return `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&location=${location}&sf=true&output=xml`;
+    };
+
+    // OUTLOOK (.ICS FILE) DOWNLOAD
+    const getOutlookCalendarIcs = () => {
+        if (!event) return "#";
+
+        const formatICSDate = (dateStr: string) => {
+            return (
+                new Date(dateStr)
+                    .toISOString()
+                    .replace(/[-:]/g, "")
+                    .split(".")[0] + "Z"
+            );
+        };
+
+        const start = formatICSDate(event.start_datetime);
+        const end = event.end_datetime
+            ? formatICSDate(event.end_datetime)
+            : start;
+
+        const icsContent = `
+            BEGIN:VCALENDAR
+            VERSION:2.0
+            BEGIN:VEVENT
+            DTSTAMP:${start}
+            DTSTART:${start}
+            DTEND:${end}
+            SUMMARY:${event.title || ""}
+            DESCRIPTION:${(event.description || "").replace(/\n/g, "\\n")}
+            LOCATION:${event.location || ""}
+            END:VEVENT
+            END:VCALENDAR
+        `.trim();
+
+        const blob = new Blob([icsContent], {
+            type: "text/calendar;charset=utf-8",
+        });
+        return URL.createObjectURL(blob);
+    };
+
     if (loading) {
         return (
             <div className="flex justify-center items-center py-20 text-xl text-gray-600">
@@ -207,180 +272,185 @@ export default function EventDetail() {
                 </div>
             )}
 
-            {user?.is_staff ||
-                (boardMemberOrgs.some(
+            {(user?.is_staff ||
+                boardMemberOrgs.some(
                     (org) => org.name === event.host_organization?.name
-                ) && (
-                    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-xs mb-6">
-                        <div className="flex items-center justify-between flex-wrap gap-3">
-                            <div className="text-gray-700 font-medium">
-                                Event Admin Controls
-                            </div>
-                            <div className="flex items-center gap-3">
-                                {!editing ? (
+                )) && (
+                <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-xs mb-6">
+                    <div className="flex items-center justify-between flex-wrap gap-3">
+                        <div className="text-gray-700 font-medium">
+                            Event Admin Controls
+                        </div>
+                        <div className="flex items-center gap-3">
+                            {!editing && <button
+                                onClick={() => setShowRSVPList(!showRSVPList)}
+                                className="px-4 py-2 rounded-md border border-foreground/50 hover:bg-gray-200 btn"
+                            >
+                                <LuClipboardList /> View RSVP List
+                            </button>}
+                            {!editing ? (
+                                <button
+                                    onClick={handleEditToggle}
+                                    className="px-4 py-2 rounded-lg btn-secondary font-medium
+                                               border border-secondary hover:border-secondary-dark"
+                                >
+                                    <LuPencil /> Edit
+                                </button>
+                            ) : (
+                                <>
+                                    <button
+                                        onClick={handleSave}
+                                        disabled={saving}
+                                        className="px-4 py-2 rounded-md btn-primary border border-primary hover:border-primary-dark"
+                                    >
+                                        {saving ? "Saving..." : "Save"}
+                                    </button>
                                     <button
                                         onClick={handleEditToggle}
-                                        className="px-4 py-2 rounded bg-gray-100 hover:bg-gray-200"
+                                        disabled={saving}
+                                        className="px-4 py-2 rounded-md border border-foreground/50 hover:bg-gray-200 disabled:opacity-50 btn"
                                     >
-                                        Edit
+                                        Cancel
                                     </button>
-                                ) : (
-                                    <>
-                                        <button
-                                            onClick={handleSave}
-                                            disabled={saving}
-                                            className="px-4 py-2 rounded btn-primary"
-                                        >
-                                            {saving ? "Saving..." : "Save"}
-                                        </button>
-                                        <button
-                                            onClick={handleEditToggle}
-                                            disabled={saving}
-                                            className="px-4 py-2 rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-                                        >
-                                            Cancel
-                                        </button>
-                                    </>
-                                )}
+                                </>
+                            )}
+                        </div>
+                    </div>
+
+                    {editing && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                            <div>
+                                <label className="block text-sm text-gray-700 mb-1">
+                                    Title
+                                </label>
+                                <input
+                                    value={form.title || ""}
+                                    onChange={(e) =>
+                                        handleFieldChange(
+                                            "title",
+                                            e.target.value
+                                        )
+                                    }
+                                    className="w-full border border-gray-300 rounded px-3 py-2"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm text-gray-700 mb-1">
+                                    Location
+                                </label>
+                                <input
+                                    value={form.location || ""}
+                                    onChange={(e) =>
+                                        handleFieldChange(
+                                            "location",
+                                            e.target.value
+                                        )
+                                    }
+                                    className="w-full border border-gray-300 rounded px-3 py-2"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm text-gray-700 mb-1">
+                                    Room
+                                </label>
+                                <input
+                                    value={form.room || ""}
+                                    onChange={(e) =>
+                                        handleFieldChange(
+                                            "room",
+                                            e.target.value
+                                        )
+                                    }
+                                    className="w-full border border-gray-300 rounded px-3 py-2"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm text-gray-700 mb-1">
+                                    Modality
+                                </label>
+                                <select
+                                    value={form.modality || "in-person"}
+                                    onChange={(e) =>
+                                        handleFieldChange(
+                                            "modality",
+                                            e.target.value
+                                        )
+                                    }
+                                    className="w-full border border-gray-300 rounded px-3 py-2"
+                                >
+                                    <option value="in-person">In-Person</option>
+                                    <option value="online">Online</option>
+                                    <option value="hybrid">Hybrid</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm text-gray-700 mb-1">
+                                    Start
+                                </label>
+                                <input
+                                    type="datetime-local"
+                                    value={
+                                        form.start_datetime
+                                            ? new Date(form.start_datetime)
+                                                  .toISOString()
+                                                  .slice(0, 16)
+                                            : ""
+                                    }
+                                    onChange={(e) =>
+                                        handleFieldChange(
+                                            "start_datetime",
+                                            new Date(
+                                                e.target.value
+                                            ).toISOString()
+                                        )
+                                    }
+                                    className="w-full border border-gray-300 rounded px-3 py-2"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm text-gray-700 mb-1">
+                                    End
+                                </label>
+                                <input
+                                    type="datetime-local"
+                                    value={
+                                        form.end_datetime
+                                            ? new Date(form.end_datetime)
+                                                  .toISOString()
+                                                  .slice(0, 16)
+                                            : ""
+                                    }
+                                    onChange={(e) =>
+                                        handleFieldChange(
+                                            "end_datetime",
+                                            new Date(
+                                                e.target.value
+                                            ).toISOString()
+                                        )
+                                    }
+                                    className="w-full border border-gray-300 rounded px-3 py-2"
+                                />
+                            </div>
+                            <div className="md:col-span-2">
+                                <label className="block text-sm text-gray-700 mb-1">
+                                    Description
+                                </label>
+                                <textarea
+                                    value={form.description || ""}
+                                    onChange={(e) =>
+                                        handleFieldChange(
+                                            "description",
+                                            e.target.value
+                                        )
+                                    }
+                                    className="w-full border border-gray-300 rounded px-3 py-2"
+                                    rows={5}
+                                />
                             </div>
                         </div>
-
-                        {editing && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                <div>
-                                    <label className="block text-sm text-gray-700 mb-1">
-                                        Title
-                                    </label>
-                                    <input
-                                        value={form.title || ""}
-                                        onChange={(e) =>
-                                            handleFieldChange(
-                                                "title",
-                                                e.target.value
-                                            )
-                                        }
-                                        className="w-full border border-gray-300 rounded px-3 py-2"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm text-gray-700 mb-1">
-                                        Location
-                                    </label>
-                                    <input
-                                        value={form.location || ""}
-                                        onChange={(e) =>
-                                            handleFieldChange(
-                                                "location",
-                                                e.target.value
-                                            )
-                                        }
-                                        className="w-full border border-gray-300 rounded px-3 py-2"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm text-gray-700 mb-1">
-                                        Room
-                                    </label>
-                                    <input
-                                        value={form.room || ""}
-                                        onChange={(e) =>
-                                            handleFieldChange(
-                                                "room",
-                                                e.target.value
-                                            )
-                                        }
-                                        className="w-full border border-gray-300 rounded px-3 py-2"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm text-gray-700 mb-1">
-                                        Modality
-                                    </label>
-                                    <select
-                                        value={form.modality || "in-person"}
-                                        onChange={(e) =>
-                                            handleFieldChange(
-                                                "modality",
-                                                e.target.value
-                                            )
-                                        }
-                                        className="w-full border border-gray-300 rounded px-3 py-2"
-                                    >
-                                        <option value="in-person">
-                                            In-Person
-                                        </option>
-                                        <option value="online">Online</option>
-                                        <option value="hybrid">Hybrid</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="block text-sm text-gray-700 mb-1">
-                                        Start
-                                    </label>
-                                    <input
-                                        type="datetime-local"
-                                        value={
-                                            form.start_datetime
-                                                ? new Date(form.start_datetime)
-                                                      .toISOString()
-                                                      .slice(0, 16)
-                                                : ""
-                                        }
-                                        onChange={(e) =>
-                                            handleFieldChange(
-                                                "start_datetime",
-                                                new Date(
-                                                    e.target.value
-                                                ).toISOString()
-                                            )
-                                        }
-                                        className="w-full border border-gray-300 rounded px-3 py-2"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm text-gray-700 mb-1">
-                                        End
-                                    </label>
-                                    <input
-                                        type="datetime-local"
-                                        value={
-                                            form.end_datetime
-                                                ? new Date(form.end_datetime)
-                                                      .toISOString()
-                                                      .slice(0, 16)
-                                                : ""
-                                        }
-                                        onChange={(e) =>
-                                            handleFieldChange(
-                                                "end_datetime",
-                                                new Date(
-                                                    e.target.value
-                                                ).toISOString()
-                                            )
-                                        }
-                                        className="w-full border border-gray-300 rounded px-3 py-2"
-                                    />
-                                </div>
-                                <div className="md:col-span-2">
-                                    <label className="block text-sm text-gray-700 mb-1">
-                                        Description
-                                    </label>
-                                    <textarea
-                                        value={form.description || ""}
-                                        onChange={(e) =>
-                                            handleFieldChange(
-                                                "description",
-                                                e.target.value
-                                            )
-                                        }
-                                        className="w-full border border-gray-300 rounded px-3 py-2"
-                                        rows={5}
-                                    />
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                ))}
+                    )}
+                </div>
+            )}
 
             <div className="mb-6">
                 <div className="flex items-start justify-between flex-wrap gap-4">
@@ -649,10 +719,32 @@ export default function EventDetail() {
                                     </span>
                                 </div>
                             )}
+                            <div className="flex flex-col gap-3 mt-4">
+                                {/* Google Calendar Button */}
+                                <a
+                                    href={getGoogleCalendarUrl()}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center justify-center gap-2 font-medium btn-outline-primary px-5 py-2 rounded"
+                                >
+                                    <LuCalendar /> Add to Google Calendar
+                                </a>
+
+                                {/* Outlook ICS Download Button */}
+                                <a
+                                    href={getOutlookCalendarIcs()}
+                                    download={`${event?.title || "event"}.ics`}
+                                    className="inline-flex items-center justify-center gap-2 font-medium btn-outline-secondary px-5 py-2 rounded"
+                                >
+                                    <LuFolder />
+                                    Add to Outlook Calendar
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            {showRSVPList && <EventRSVPList userRSVPs={event.rsvp_users} setShowRSVPList={setShowRSVPList} />}
         </div>
     );
 }

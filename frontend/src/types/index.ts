@@ -21,6 +21,7 @@ export interface Organization {
   slack: string;
   events: Event[];
   members_count: number;
+  members: OrganizationMember[];
   created_at: string;
   created_by: number;
   is_verified: boolean;
@@ -32,6 +33,8 @@ export interface MinimalOrganization {
   name: string;
   slug: string;
   description: string;
+  logo: string;
+  is_verified: boolean;
 }
 
 export interface Category {
@@ -59,6 +62,7 @@ export interface Event {
   has_free_swag: boolean;
   other_perks?: string | null;
   employers_in_attendance?: string | null;
+  rsvp_users: User[];
   rsvp_count?: number;
   user_has_rsvp?: boolean;
   status: "draft" | "published" | "cancelled";
@@ -80,9 +84,12 @@ export interface OrganizationMember {
   is_board_member: boolean;
   is_leader: boolean;
   joined_at: string;
-  organization: Organization;
+  organization: MinimalOrganization;
   role: string;
   user: string;
+  user_username: string;
+  user_full_name: string;
+  user_profile_picture: string;
 }
 
 export interface UserProfile {

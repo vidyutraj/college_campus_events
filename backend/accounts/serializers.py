@@ -26,7 +26,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
 
     def get_organizations_board_member(self, obj):
         board_memberships = OrganizationMember.objects.filter(user=obj.user, is_board_member=True)
-        return OrganizationMemberSerializer(board_memberships, many=True).data
+        return OrganizationMemberSerializer(board_memberships, many=True, context=self.context).data
 
 
 class StudentRegistrationSerializer(serializers.ModelSerializer):

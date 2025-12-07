@@ -22,6 +22,7 @@
   --inset-shadow-md: inset 0 2px 3px rgba(0, 0, 0, 1); 
 }
 
+
 body {
   margin: 0;
   color: var(--color-foreground);
@@ -45,16 +46,24 @@ code {
   100% { opacity: 1; transform: translateY(0); }
 }
 
-[class*="btn-"] {
-  @apply disabled:cursor-not-allowed transition-colors cursor-pointer;
+[class*="btn"] {
+  @apply disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center justify-center gap-2;
 }
 
 .btn-primary {
   @apply bg-primary text-background hover:bg-primary-dark disabled:bg-primary-light;
 }
 
+.btn-outline-primary {
+  @apply border border-primary text-primary hover:text-background hover:bg-primary;
+}
+
 .btn-secondary {
   @apply bg-secondary text-background hover:bg-secondary-dark disabled:bg-secondary-light;
+}
+
+.btn-outline-secondary {
+  @apply border border-secondary text-secondary hover:text-background hover:bg-secondary;
 }
 
 .btn-tertiary {
@@ -71,4 +80,13 @@ code {
 
 .input-gray {
   @apply bg-background border border-foreground/20;
+}
+
+/* FullCalendar toolbar buttons */
+.fc .fc-toolbar button {
+  @apply bg-secondary text-white font-inter px-3 py-1 rounded transition-colors border-0 hover:bg-secondary-dark disabled:bg-secondary-light;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active, .fc .fc-button-primary:not(:disabled):active {
+  @apply bg-secondary-dark
 }

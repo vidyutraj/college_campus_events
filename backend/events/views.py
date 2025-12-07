@@ -43,7 +43,14 @@ class EventViewSet(viewsets.ModelViewSet):
         if self.action != 'retrieve':
             if self.request.query_params.get('include_past', 'false').lower() != 'true':
                 queryset = queryset.filter(start_datetime__gte=timezone.now())
-        
+
+        rsvped_by_user = self.request.query_params.get('rsvped_by_user', None)
+        if rsvped_by_user and self.request.user.is_authenticated:
+            if rsvped_by_user.lower() == 'true':
+                queryset = queryset.filter(rsvps__user=self.request.user)
+            elif rsvped_by_user.lower() == 'false':
+                queryset = queryset.exclude(rsvps__user=self.request.user)
+            
         return queryset
 
     def perform_create(self, serializer):
