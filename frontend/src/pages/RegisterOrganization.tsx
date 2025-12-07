@@ -11,7 +11,7 @@ interface OrganizationFormData {
 
 export default function RegisterOrganization() {
     const navigate = useNavigate();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, checkAuth } = useAuth();
 
     const [formData, setFormData] = useState<OrganizationFormData>({
         name: "",
@@ -48,6 +48,7 @@ export default function RegisterOrganization() {
             await axiosInstance.post("/api/organizations/", formData);
 
             alert("Organization registered successfully and is now pending approval.");
+            checkAuth();
             navigate("/events");
         } catch (err: unknown) {
             console.error(err);

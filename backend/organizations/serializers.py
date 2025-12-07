@@ -15,7 +15,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
             'linkedin', 'slack', 'discord', 'logo', 'created_by', 'is_verified',
             'created_at', 'updated_at', 'members_count', 'members', 'events'
         ]
-        read_only_fields = ['is_verified', 'created_at', 'updated_at', 'created_by']
+        read_only_fields = ['slug', 'is_verified', 'created_at', 'updated_at', 'created_by']
     
     def get_members_count(self, obj):
         return obj.members.count()
