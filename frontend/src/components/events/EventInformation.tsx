@@ -15,6 +15,7 @@ export default function EventInformation({ event }: EventInformationProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <span className="block text-sm font-medium text-gray-500 mb-1">
+                            📅 Date & Time
                         </span>
                         <div className="text-gray-800">
                             <strong>{formatDate(event.start_datetime)}</strong>
@@ -90,7 +91,7 @@ export default function EventInformation({ event }: EventInformationProps) {
                             👥 RSVPs
                         </span>
                         <div className="font-medium">
-                            {event.rsvp_count || 0} people RSVPed
+                            {event.rsvp_users.length || 0} {event.rsvp_users.length == 1 ? "person" : "people"} RSVPed
                         </div>
                     </div>
                 </div>
