@@ -16,20 +16,19 @@ export function toLocalInputValue(dt: string) {
 export const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
+        weekday: "short",
+        month: "short",
         day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
+        hour: "numeric",
+        minute: "numeric",
     });
 };
 
 export const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
+        hour: "numeric",
+        minute: "numeric",
     });
 };
 
@@ -74,3 +73,27 @@ export const getOutlookCalendarIcs = (event: Event) => {
     const blob = new Blob([ics], { type: "text/calendar" });
     return URL.createObjectURL(blob);
 };
+
+export function isSameDate(date1: string | Date, date2: string | Date) {
+    const d1 = new Date(date1);
+    const d2 = new Date(date2);
+
+    return (
+        d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getDate() === d2.getDate()
+    );
+}
+
+export function formatModality(modality: string) {
+    switch (modality) {
+        case "in-person":
+            return "In-Person";
+        case "online":
+            return "Online";
+        case "hybrid":
+            return "Hybrid";
+        default:
+            return modality;
+    }
+}

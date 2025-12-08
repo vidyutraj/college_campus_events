@@ -49,8 +49,8 @@ export default function Home() {
 
     return (
         <div className="min-h-[calc(100vh-80px)] w-full">
-            <div className="min-h-[80vh] w-full flex-col justify-center bg-[url(/grid.jpg)] bg-background/97 bg-blend-lighten">
-                <div className="w-full max-w-7xl flex gap-15 flex-col lg:flex-row pt-2 px-10 sm:pt-10 sm:px-20">
+            <div className="w-full bg-[url(/grid.jpg)] bg-background/97 bg-blend-lighten">
+                <div className="mx-auto w-full max-w-7xl flex gap-15 flex-col lg:flex-row pt-2 px-10 sm:pt-10 sm:px-20">
                     <div className="w-full lg:w-3/5 pt-10 sm:py-10 flex flex-col gap-8 justify-center">
                         <h1 className="text-6xl sm:text-7xl font-bold">
                             Catch the Latest{" "}
@@ -97,7 +97,7 @@ export default function Home() {
 
             {/* Features Section */}
             <div className="mx-auto px-5 pt-6 pb-12 bg-white">
-                <div className="max-w-7xl grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-3 gap-8">
                     {features.map((feature) => (
                         <div
                             key={feature.title}

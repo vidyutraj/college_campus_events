@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import type { Event } from "../../types";
+import { formatModality } from "../../utils/events";
 
 interface EventCardProps {
     event: Event;
@@ -40,7 +41,7 @@ export default function EventCard({ event, hideDetail = false }: EventCardProps)
                     <strong>Location:</strong> {event.location}
                 </p>
                 <p>
-                    <strong>Modality:</strong> {event.modality}
+                    <strong>Modality:</strong> {formatModality(event.modality)}
                 </p>
                 {event.host_organization && (
                     <p>

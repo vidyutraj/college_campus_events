@@ -142,6 +142,19 @@ export default function Events({ myEventsOnly = false }: EventsProps) {
         (e) => e.is_approved && e.status === "published"
     );
 
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 640) {
+                setView("list");
+            }
+        };
+
+        handleResize();
+        window.addEventListener("resize", handleResize);
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
     return (
         <div className="max-w-7xl mx-auto px-5 py-8">
             <EventsHeader

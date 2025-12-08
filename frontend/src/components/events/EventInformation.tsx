@@ -1,12 +1,22 @@
 import { Link } from "react-router-dom";
 import type { Event } from "../../types";
-import { formatDate, formatTime } from "../../utils/events";
+import { formatModality, formatDate, formatTime, isSameDate } from "../../utils/events";
+import {
+    LuBookUser,
+    LuBuilding,
+    LuCalendar,
+    LuDoorOpen,
+    LuLaptop,
+    LuMapPin,
+    LuUser,
+} from "react-icons/lu";
 
 interface EventInformationProps {
     event: Event;
 }
 
 export default function EventInformation({ event }: EventInformationProps) {
+    console.log(event);
     return (
         <>
             {/* Event Information */}
@@ -14,30 +24,47 @@ export default function EventInformation({ event }: EventInformationProps) {
                 <h2 className="text-2xl font-bold mb-4">Event Information</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <span className="block text-sm font-medium text-gray-500 mb-1">
-                            📅 Date & Time
+                        <span className="flex items-center gap-1 text-sm font-medium text-gray-500 mb-1">
+                            <LuCalendar /> Date & Time
                         </span>
                         <div className="text-gray-800">
-                            <strong>{formatDate(event.start_datetime)}</strong>
-                            {event.end_datetime && (
-                                <span className="block text-sm">
-                                    {" "}
-                                    to {formatTime(event.end_datetime)}
-                                </span>
-                            )}
+                            <strong>
+                                {formatDate(event.start_datetime)}
+                                {event.end_datetime && (
+                                    <>
+                                        {" "}
+                                        to{" "}
+                                        {isSameDate(
+                                            event.start_datetime,
+                                            event.end_datetime
+                                        )
+                                            ? formatTime(event.end_datetime)
+                                            : formatDate(event.end_datetime)}
+                                    </>
+                                )}
+                            </strong>
                         </div>
                     </div>
 
                     <div>
-                        <span className="block text-sm font-medium text-gray-500 mb-1">
-                            📍 Location
+                        <span className="flex items-center gap-1 text-sm font-medium text-gray-500 mb-1">
+                            <LuMapPin /> Location
                         </span>
                         <div className="text-gray-800">{event.location}</div>
                     </div>
 
+                    {event.room && (
+                        <div>
+                            <span className="flex items-center gap-1 text-sm font-medium text-gray-500 mb-1">
+                                <LuDoorOpen /> Room
+                            </span>
+                            <div className="text-gray-800">{event.room}</div>
+                        </div>
+                    )}
+
                     <div>
-                        <span className="block text-sm font-medium text-gray-500 mb-1">
-                            💻 Modality
+                        <span className="flex items-center gap-1 text-sm font-medium text-gray-500 mb-1">
+                            <LuLaptop /> Modality
                         </span>
                         <span
                             className={`inline-block px-3 py-1 rounded text-sm font-medium ${
@@ -48,18 +75,14 @@ export default function EventInformation({ event }: EventInformationProps) {
                                     : "bg-purple-100 text-purple-800"
                             }`}
                         >
-                            {event.modality === "in-person"
-                                ? "In-Person"
-                                : event.modality === "online"
-                                ? "Online"
-                                : "Hybrid"}
+                            {formatModality(event.modality)}
                         </span>
                     </div>
 
                     {event.host_organization && (
                         <div>
-                            <span className="block text-sm font-medium text-gray-500 mb-1">
-                                🏢 Host Organization
+                            <span className="flex items-center gap-1 font-medium text-gray-500 mb-1">
+                                <LuBuilding /> Host Organization
                             </span>
                             <Link
                                 to={
@@ -77,8 +100,8 @@ export default function EventInformation({ event }: EventInformationProps) {
 
                     {event.host_user && (
                         <div>
-                            <span className="block text-sm font-medium text-gray-500 mb-1">
-                                👤 Host
+                            <span className="flex items-center gap-1 text-sm font-medium text-gray-500 mb-1">
+                                <LuUser /> Host
                             </span>
                             <div className="text-gray-800">
                                 {event.host_user}
@@ -87,11 +110,13 @@ export default function EventInformation({ event }: EventInformationProps) {
                     )}
 
                     <div>
-                        <span className="block text-sm font-medium text-gray-500 mb-1">
-                            👥 RSVPs
+                        <span className="flex items-center gap-1 text-sm font-medium text-gray-500 mb-1">
+                            <LuBookUser /> RSVPs
                         </span>
                         <div className="font-medium">
-                            {event.rsvp_users.length || 0} {event.rsvp_users.length == 1 ? "person" : "people"} RSVPed
+                            {event.rsvp_users.length || 0}{" "}
+                            {event.rsvp_users.length == 1 ? "person" : "people"}{" "}
+                            RSVPed
                         </div>
                     </div>
                 </div>

@@ -54,7 +54,6 @@ class EventViewSet(viewsets.ModelViewSet):
         return queryset
 
     def perform_create(self, serializer):
-        host_user = self.request.user
         
         # Get host_organization from validated data if present
         host_organization_id = self.request.data.get('host_organization')
@@ -62,12 +61,13 @@ class EventViewSet(viewsets.ModelViewSet):
             # If host_organization_id is provided, fetch the Organization instance
             try:
                 organization_instance = Organization.objects.get(id=host_organization_id)
-                serializer.save(host_user=host_user, host_organization=organization_instance)
+                serializer.save(host_organization=organization_instance)
             except Organization.DoesNotExist:
                 # Handle case where organization ID is invalid
                 raise serializer.ValidationError({"host_organization": "Organization with this ID does not exist."})
         else:
             # Otherwise, save without host_organization, relying on other defaults/logic
+            host_user = self.request.user
             serializer.save(host_user=host_user)
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser])

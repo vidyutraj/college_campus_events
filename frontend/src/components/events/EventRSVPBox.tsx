@@ -35,14 +35,14 @@ export default function EventRSVPBox({
                     <span className="text-gray-500">You must be signed in to RSVP to this event</span>
                 </div>
             ) : event.user_has_rsvp ? (
-                <div className="flex items-center gap-4 flex-wrap">
-                    <span className="bg-green-100 text-green-800 px-4 py-2 rounded font-medium">
+                <div className="flex items-center gap-8 flex-wrap">
+                    <span className="text-green-800 font-medium">
                         ✓ You have RSVPed
                     </span>
                     <button
                         onClick={handleCancelRSVP}
                         disabled={rsvpLoading}
-                        className="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="btn text-sm text-red-500 border-red-200 border px-4 py-1 rounded hover:bg-red-50 disabled:opacity-50"
                     >
                         {rsvpLoading ? "Cancelling..." : "Cancel RSVP"}
                     </button>

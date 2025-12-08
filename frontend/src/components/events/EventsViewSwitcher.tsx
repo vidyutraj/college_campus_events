@@ -7,7 +7,7 @@ interface Props {
 
 export default function EventsViewSwitcher({ view, setView }: Props) {
     return (
-        <div className="flex mb-6 w-full">
+        <div className="hidden sm:flex mb-6 w-full">
             <button
                 onClick={() => setView("list")}
                 className={`w-1/2 px-4 py-2 btn border-y border-l rounded-l-lg ${

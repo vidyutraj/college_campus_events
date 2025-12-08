@@ -2,6 +2,8 @@ import { useState, type Dispatch, type SetStateAction } from "react";
 import axiosInstance from "../../utils/axiosConfig";
 import type { UserProfile } from "../../types";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
 
 interface EditProfileModalProps {
     profile: UserProfile;
@@ -16,6 +18,7 @@ export default function EditProfileModal({
     setEditing,
     setProfile,
 }: EditProfileModalProps) {
+    const navigate = useNavigate();
     const { checkAuth } = useAuth();
 
     const [form, setForm] = useState({
@@ -59,11 +62,20 @@ export default function EditProfileModal({
             alert("Profile updated!");
             setEditing(false);
 
-            const response = await axiosInstance.get(`/api/profiles/${username}/`);
+            const response = await axiosInstance.get(`/api/profiles/${form.username}/`);
             setProfile(response.data);
+
+            // Redirect if username changed
+            if (form.username !== username) {
+                navigate(`/user/${form.username}`);
+            }
         } catch (err) {
             console.error(err);
-            alert("Failed to update profile.");
+            if (err instanceof AxiosError && err.response?.data.detail) {
+                alert(err.response.data.detail);
+            } else {
+                alert("Failed to update profile.");
+            }
         } finally {
             setSaving(false);
         }

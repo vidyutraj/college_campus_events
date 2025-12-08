@@ -1,9 +1,11 @@
 import type { Event } from "../../types";
 import {
+    formatModality,
     formatDate,
     formatTime,
     getGoogleCalendarUrl,
     getOutlookCalendarIcs,
+    isSameDate,
 } from "../../utils/events";
 import { LuCalendar, LuFolder } from "react-icons/lu";
 
@@ -13,31 +15,36 @@ export default function EventSidebar({ event }: { event: Event }) {
             <h3 className="text-xl font-bold mb-4">Quick Info</h3>
             <div className="space-y-3 text-sm">
                 <div>
-                    <strong className="block text-gray-600">Date:</strong>
+                    <strong className="block text-gray-600">Date & Time:</strong>
                     <span className="text-gray-800">
                         {formatDate(event.start_datetime)}
-                    </span>
-                </div>
-                <div>
-                    <strong className="block text-gray-600">Time:</strong>
-                    <span className="text-gray-800">
-                        {formatTime(event.start_datetime)}
-                        {event.end_datetime &&
-                            ` - ${formatTime(event.end_datetime)}`}
+                        {event.end_datetime && (
+                            <>
+                                {" "}
+                                -{" "}
+                                {isSameDate(
+                                    event.start_datetime,
+                                    event.end_datetime
+                                )
+                                    ? formatTime(event.end_datetime)
+                                    : formatDate(event.end_datetime)}
+                            </>
+                        )}
                     </span>
                 </div>
                 <div>
                     <strong className="block text-gray-600">Location:</strong>
                     <span className="text-gray-800">{event.location}</span>
                 </div>
+                {event.room && 
+                <div>
+                    <strong className="block text-gray-600">Room:</strong>
+                    <span className="text-gray-800">{event.room}</span>
+                </div>}
                 <div>
                     <strong className="block text-gray-600">Modality:</strong>
                     <span className="text-gray-800">
-                        {event.modality === "in-person"
-                            ? "In-Person"
-                            : event.modality === "online"
-                            ? "Online"
-                            : "Hybrid"}
+                        {formatModality(event.modality)}
                     </span>
                 </div>
                 {event.host_organization && (

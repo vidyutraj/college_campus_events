@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.contrib.auth import login, logout
 from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.models import User
 
 from .models import StudentProfile
 from .serializers import (
@@ -101,6 +102,14 @@ def edit_profile(request, username):
     user_fields = ['username', 'first_name', 'last_name']
     for field in user_fields:
         if field in request.data:
+            if field == 'username':
+                new_username = request.data['username']
+                # Check if the username is already taken by another user
+                if User.objects.filter(username=new_username).exclude(pk=user.pk).exists():
+                    return Response(
+                        {'detail': 'This username is already taken.'},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
             setattr(user, field, request.data[field])
     user.save()
     
