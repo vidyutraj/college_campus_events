@@ -63,7 +63,6 @@ export interface Event {
   other_perks?: string | null;
   employers_in_attendance?: string | null;
   rsvp_users: User[];
-  rsvp_count?: number;
   user_has_rsvp?: boolean;
   status: "draft" | "published" | "cancelled";
   is_approved?: boolean;

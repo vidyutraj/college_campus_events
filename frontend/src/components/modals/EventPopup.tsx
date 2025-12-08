@@ -62,7 +62,7 @@ export default function EventPopup({
                             )}
                         </div>
                         <p className="text-primary font-medium">
-                            {event.rsvp_count || 0} RSVPs
+                            {event.rsvp_users.length || 0} RSVPs
                         </p>
                     </div>
                     <p className="text-gray-700 line-clamp-3">
