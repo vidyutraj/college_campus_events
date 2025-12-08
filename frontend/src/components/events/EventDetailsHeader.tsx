@@ -11,7 +11,7 @@ export default function EventDetailsHeader({
     return (
         <>
             <Link
-                to={fromAdmin ? "/admin/event-requests" : "/events"}
+                to={fromAdmin ? "/manage/event-requests" : "/events"}
                 className="text-primary hover:text-primary-dark mb-6 inline-block"
             >
                 ← Back to {fromAdmin ? "Event Requests" : "Events"}

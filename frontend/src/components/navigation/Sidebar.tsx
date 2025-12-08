@@ -37,12 +37,12 @@ export default function Sidebar({ sbCollapsed }: SidebarProps) {
     const adminNavItems = [
         {
             name: "Event Requests",
-            href: "/admin/event-requests",
+            href: "/manage/event-requests",
             icon: LuBadgeCheck,
         },
         {
             name: "Event Administration",
-            href: "/admin/events",
+            href: "/manage/events",
             icon: LuCalendarRange,
         },
     ];

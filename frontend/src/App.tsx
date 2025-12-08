@@ -50,11 +50,11 @@ function App() {
                                 element={<CreateEvent />}
                             />
                             <Route
-                                path="/admin/events"
+                                path="/manage/events"
                                 element={<AdminEvents />}
                             />
                             <Route
-                                path="/admin/event-requests"
+                                path="/manage/event-requests"
                                 element={<AdminEventRequests />}
                             />
                             <Route
